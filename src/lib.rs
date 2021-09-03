@@ -1,4 +1,4 @@
-//! This is an [aframe](https://aframe.io/) library for Rust.
+#![doc = include_str!("../README.md")]
 
 pub mod sys;
 pub mod shader;
