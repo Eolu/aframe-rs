@@ -13,32 +13,12 @@ use crate::complex_enum;
 component_struct!(Position "{} {} {}", x: f32 = 0.0, y: f32 = 0.0, z: f32 = 0.0);
 component_struct!(Rotation "{} {} {}", x: f32 = 0.0, y: f32 = 0.0, z: f32 = 0.0);
 component_struct!
-(Spin, 
-    radians_per_millisecond: "radiansPerMillisecond" f64 = 0.00116355333, 
-    speed_mult: "speedMult" f32 = 1.0, 
-    axis: "axis" Axis = Axis::X,
-    autoplay: "autoplay" bool = true
-);
-simple_enum!(Axis, X => "x", Y => "y", Z => "z");
-component_struct!
 (Sound, 
     src: "src" Cow<'static, str> = Cow::Borrowed(""),
     autoplay: "autoplay" bool = false,
     positional: "positional" bool = true,
     volume: "volume" f32 = 1.0,
     looping: "loop" bool = false
-);
-component_struct!
-(PlaySoundOnEvent, 
-    mode: "mode" PlaySoundOnEventMode = PlaySoundOnEventMode::OneShot,
-    event: "event" Cow<'static, str> = Cow::Borrowed("click")
-);
-simple_enum!
-(PlaySoundOnEventMode, 
-    PlayOnly => "play-only", 
-    OneShot => "one-shot", 
-    TogglePause => "toggle-pause", 
-    ToggleStop => "toggle-stop"
 );
 component_struct!
 (Light "{}; color: {}; intensity: {}", 

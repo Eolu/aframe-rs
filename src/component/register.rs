@@ -68,9 +68,9 @@ use js_sys::{Object, Reflect};
 macro_rules! component_def
 {
     (
-        $(dependencies: $($deps:expr),*,)? 
+        $(dependencies: $($deps:expr),*;)? 
         $(schema: $schema:expr,)?
-        $(multiple $mult:expr,)? 
+        $(multiple: $mult:expr,)? 
         $(init: $init:expr,)?
         $(update: $update:expr,)?
         $(tick: $tick:expr,)?
@@ -84,7 +84,7 @@ macro_rules! component_def
         $crate::component::ComponentReg
         {
             $(schema: $schema,)?
-            $(dependencies: std::borrow::Cow::Borrowed(&[$($deps.into()),*]),)?
+            $(dependencies: std::borrow::Cow::Borrowed(&[$(std::borrow::Cow::Borrowed($deps)),*]),)?
             $(multiple: $mult,)?
             $(init: $init.into(),)?
             $(update: $update.into(),)?
@@ -103,18 +103,18 @@ macro_rules! component_def
 #[derive(Serialize, Clone)]
 pub struct ComponentReg
 {
-    schema: HashMap<&'static str, Property>,
-    dependencies: Cow<'static, [Cow<'static, str>]>,
-    multiple: bool,
+    pub schema: HashMap<&'static str, Property>,
+    pub dependencies: Cow<'static, [Cow<'static, str>]>,
+    pub multiple: bool,
     // TODO: events: HashMap<Cow<'static, str>, Function(event)>
-    #[serde(skip)] init: JsValue,
-    #[serde(skip)] update: JsValue,
-    #[serde(skip)] tick: JsValue, 
-    #[serde(skip)] tock: JsValue,
-    #[serde(skip)] remove: JsValue,
-    #[serde(skip)] pause: JsValue,
-    #[serde(skip)] play: JsValue,
-    #[serde(skip)] update_schema: JsValue
+    #[serde(skip)] pub init: JsValue,
+    #[serde(skip)] pub update: JsValue,
+    #[serde(skip)] pub tick: JsValue, 
+    #[serde(skip)] pub tock: JsValue,
+    #[serde(skip)] pub remove: JsValue,
+    #[serde(skip)] pub pause: JsValue,
+    #[serde(skip)] pub play: JsValue,
+    #[serde(skip)] pub update_schema: JsValue
 }
 impl Default for ComponentReg
 {
@@ -228,6 +228,16 @@ impl Property
     pub fn number(default: Option<f32>) -> Self
     {
         Property{ component_type: "number", default: default.map(DefaultVal::Float) }
+    }
+
+    pub fn selector(default: Option<Cow<'static, str>>) -> Self
+    {
+        Property{ component_type: "selector", default: default.map(DefaultVal::Str) }
+    }
+
+    pub fn selector_all(default: Option<Cow<'static, str>>) -> Self
+    {
+        Property{ component_type: "selectorAll", default: default.map(DefaultVal::Str) }
     }
 
     pub fn string(default: Option<Cow<'static, str>>) -> Self

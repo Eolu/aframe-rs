@@ -8,11 +8,11 @@ use wasm_bindgen::prelude::*;
 #[derive(Serialize)]
 pub struct Shader<'a, 'b, 'c>
 {
-    schema: HashMap<Cow<'a, str>, Property>,
+    pub schema: HashMap<Cow<'a, str>, Property>,
     #[serde(rename = "vertexShader")] 
-    vertex_shader: Cow<'b, str>,
+    pub vertex_shader: Cow<'b, str>,
     #[serde(rename = "fragmentShader")] 
-    fragment_shader: Cow<'c, str>
+    pub fragment_shader: Cow<'c, str>
 }
 
 impl<'a, 'b, 'c> Shader<'a, 'b, 'c>
@@ -40,18 +40,23 @@ impl<'a, 'b, 'c> Shader<'a, 'b, 'c>
 pub struct Property
 {
     #[serde(rename = "type")] 
-    shader_type: &'static str,
+    pub shader_type: &'static str,
     #[serde(skip_serializing_if = "IsUniform::not_uniform")]
-    is: IsUniform,
+    pub is: IsUniform,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default: Option<DefaultVal>
+    pub default: Option<DefaultVal>
 }
 
 impl Property
 {
-    pub fn string(is: IsUniform, default: Option<Cow<'static, str>>) -> Self
+    pub fn color(is: IsUniform, default: Option<color::Rgb>) -> Self
     {
-        Property{ shader_type: "string", is, default: default.map(DefaultVal::Str) }
+        Property{ shader_type: "color", is, default: default.map(|c| (&c).into()).map(DefaultVal::Vec3) }
+    }
+
+    pub fn array(is: IsUniform, default: Option<Vector3>) -> Self
+    {
+        Property{ shader_type: "array", is, default: default.map(DefaultVal::Vec3) }
     }
 
     pub fn int(is: IsUniform, default: Option<i64>) -> Self
@@ -59,14 +64,14 @@ impl Property
         Property{ shader_type: "int", is, default: default.map(DefaultVal::Int) }
     }
 
-    pub fn map(is: IsUniform, default: Option<Cow<'static, str>>) -> Self
-    {
-        Property{ shader_type: "map", is, default: default.map(DefaultVal::Str) }
-    }
-
     pub fn number(is: IsUniform, default: Option<f64>) -> Self
     {
         Property{ shader_type: "number", is, default: default.map(DefaultVal::Number) }
+    }
+
+    pub fn map(is: IsUniform, default: Option<Cow<'static, str>>) -> Self
+    {
+        Property{ shader_type: "map", is, default: default.map(DefaultVal::Str) }
     }
 
     pub fn time(is: IsUniform, default: Option<f64>) -> Self
