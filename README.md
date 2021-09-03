@@ -1,0 +1,3 @@
+# aframe-rs
+
+This is an Aframe library for rust. It's still fairly experimental and a lot might change. I started writing this for a bit of fun to see if I could play with aframe from inside a [yew](https://yew.rs/) app. It started getting pretty large so I decided to abstract away all the yew-specific stuff and start making a library on its own. There's still a bunch missing and a bunch to do here, but what IS there is functional.
