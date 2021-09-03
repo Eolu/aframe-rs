@@ -327,3 +327,21 @@ simple_enum!
     Subtractive => "subtractive", 
     Multiply => "multiply"
 );
+#[derive(Debug)]
+#[repr(transparent)]
+pub struct MaterialProps(pub Cow<'static, [(Cow<'static, str>, Cow<'static, str>)]>);
+impl MaterialProps
+{
+    pub const DEFAULT: Self = MaterialProps(Cow::Borrowed(&[]));
+}
+impl std::fmt::Display for MaterialProps
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result
+    {
+        for s in self.0.iter().map(|(k, v)| format!("{}: {}; ", k, v))
+        {
+            write!(f, "{}", s)?;
+        }
+        Ok(())
+    }
+}

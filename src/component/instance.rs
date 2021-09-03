@@ -174,30 +174,14 @@ pub trait AComponent: Display
     const DEFAULT: Self;
 }
 
-#[derive(Debug)]
-#[repr(transparent)]
-pub struct MaterialProps(pub Cow<'static, [(Cow<'static, str>, Cow<'static, str>)]>);
-impl MaterialProps
-{
-    pub const DEFAULT: Self = MaterialProps(Cow::Borrowed(&[]));
-}
-impl Display for MaterialProps
-{
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result
-    {
-        for s in self.0.iter().map(|(k, v)| format!("{}: {}; ", k, v))
-        {
-            write!(f, "{}", s)?;
-        }
-        Ok(())
-    }
-}
-
+/// The type here may look daunting, but all this is just to allow you to create
+/// a `Cow<'static, [T]>` field in a component.
 #[repr(transparent)]
 #[derive(Debug)]
 pub struct List<T: Display + ToOwned + std::fmt::Debug + 'static> 
 (pub Cow<'static, [T]>)
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug;
+
 impl<T: Display + ToOwned + 'static + std::fmt::Debug> Display for List<T>
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
 {
@@ -218,6 +202,7 @@ where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
         Ok(())
     }
 }
+
 impl<T: Display + ToOwned + std::fmt::Debug + 'static> List<T>
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
 {

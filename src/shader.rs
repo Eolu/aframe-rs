@@ -51,7 +51,7 @@ impl Property
 {
     pub fn color(is: IsUniform, default: Option<color::Rgb>) -> Self
     {
-        Property{ shader_type: "color", is, default: default.map(|c| (&c).into()).map(DefaultVal::Vec3) }
+        Property{ shader_type: "color", is, default: default.map(color::Rgb::into).map(DefaultVal::Str) }
     }
 
     pub fn array(is: IsUniform, default: Option<Vector3>) -> Self
