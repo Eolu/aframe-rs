@@ -41,49 +41,50 @@ pub struct Property
 {
     #[serde(rename = "type")] 
     shader_type: &'static str,
-    is: &'static str,
+    #[serde(skip_serializing_if = "IsUniform::not_uniform")]
+    is: IsUniform,
     #[serde(skip_serializing_if = "Option::is_none")]
     default: Option<DefaultVal>
 }
 
 impl Property
 {
-    pub fn string(is: &'static str, default: Option<Cow<'static, str>>) -> Self
+    pub fn string(is: IsUniform, default: Option<Cow<'static, str>>) -> Self
     {
         Property{ shader_type: "string", is, default: default.map(DefaultVal::Str) }
     }
 
-    pub fn int(is: &'static str, default: Option<i64>) -> Self
+    pub fn int(is: IsUniform, default: Option<i64>) -> Self
     {
         Property{ shader_type: "int", is, default: default.map(DefaultVal::Int) }
     }
 
-    pub fn map(is: &'static str, default: Option<Cow<'static, str>>) -> Self
+    pub fn map(is: IsUniform, default: Option<Cow<'static, str>>) -> Self
     {
         Property{ shader_type: "map", is, default: default.map(DefaultVal::Str) }
     }
 
-    pub fn number(is: &'static str, default: Option<f64>) -> Self
+    pub fn number(is: IsUniform, default: Option<f64>) -> Self
     {
         Property{ shader_type: "number", is, default: default.map(DefaultVal::Number) }
     }
 
-    pub fn time(is: &'static str, default: Option<f64>) -> Self
+    pub fn time(is: IsUniform, default: Option<f64>) -> Self
     {
         Property{ shader_type: "time", is, default: default.map(DefaultVal::Number) }
     }
 
-    pub fn vec2(is: &'static str, default: Option<Vector2>) -> Self
+    pub fn vec2(is: IsUniform, default: Option<Vector2>) -> Self
     {
         Property{ shader_type: "vec2", is, default: default.map(DefaultVal::Vec2) }
     }
 
-    pub fn vec3(is: &'static str, default: Option<Vector3>) -> Self
+    pub fn vec3(is: IsUniform, default: Option<Vector3>) -> Self
     {
         Property{ shader_type: "vec3", is, default: default.map(DefaultVal::Vec3) }
     }
 
-    pub fn vec4(is: &'static str, default: Option<Vector4>) -> Self
+    pub fn vec4(is: IsUniform, default: Option<Vector4>) -> Self
     {
         Property{ shader_type: "vec4", is, default: default.map(DefaultVal::Vec4) }
     }
@@ -111,6 +112,29 @@ impl Serialize for DefaultVal
             Self::Vec2(vec) => vec.serialize(serializer),
             Self::Vec3(vec) => vec.serialize(serializer),
             Self::Vec4(vec) => vec.serialize(serializer)
+        }
+    }
+}
+
+pub enum IsUniform
+{
+    Yes, No
+}
+impl IsUniform
+{
+    fn not_uniform(&self) -> bool
+    {
+        matches!(self, Self::No)
+    }
+}
+impl Serialize for IsUniform
+{
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    {
+        match self
+        {
+            Self::Yes => "uniform".serialize(serializer),
+            Self::No => "".serialize(serializer)
         }
     }
 }
