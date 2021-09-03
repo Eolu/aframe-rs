@@ -17,7 +17,7 @@ use js_sys::{Object, Reflect};
 /// | field | syntax explanation | description |
 /// |-------|--------------------|-------------|
 /// | dependencies | strings separated by commas | names of components that must be initialized prior to this one |
-/// | schema | A hashmap containing string keys and SchemaProperty values. Recommend the maplit crate | Describes component properties |
+/// | schema | A hashmap containing string keys and Property values. Recommend the maplit crate | Describes component properties |
 /// | multiple | boolean value | True to allow multiple components on a single entity |
 /// | init | JsValue created from a js_sys::Function() | Called on initialization |
 /// | update | JsValue created from a js_sys::Function(oldData) | Called whenever the component’s properties change |
@@ -35,9 +35,9 @@ use js_sys::{Object, Reflect};
 ///     dependencies: "dependency1", "dependency2", some_string,
 ///     schema: hashmap!
 ///     {
-///         "position" => SchemaProperty::float("number", None),
-///         "text" => SchemaProperty::string("string", Some(Cow::Borrowed("x"))),
-///         "autoplay" => SchemaProperty::boolean("boolean", Some(true))
+///         "position" => Property::float("number", None),
+///         "text" => Property::string("string", Some(Cow::Borrowed("x"))),
+///         "autoplay" => Property::boolean("boolean", Some(true))
 ///     },
 ///     multiple: true,
 ///     init: js!
@@ -103,7 +103,7 @@ macro_rules! component_def
 #[derive(Serialize, Clone)]
 pub struct ComponentReg
 {
-    schema: HashMap<&'static str, SchemaProperty>,
+    schema: HashMap<&'static str, Property>,
     dependencies: Cow<'static, [Cow<'static, str>]>,
     multiple: bool,
     // TODO: events: HashMap<Cow<'static, str>, Function(event)>
@@ -175,7 +175,7 @@ impl ComponentReg
 }
 
 #[derive(Serialize, Clone)]
-pub struct SchemaProperty
+pub struct Property
 {
     #[serde(rename = "type")] 
     component_type: &'static str,
@@ -183,71 +183,71 @@ pub struct SchemaProperty
     default: Option<DefaultVal>
 }
 
-impl SchemaProperty
+impl Property
 {
     pub fn array(default: Option<Vec<Cow<'static, str>>>) -> Self
     {
-        SchemaProperty{ component_type: "array", default: default.map(DefaultVal::Array) }
+        Property{ component_type: "array", default: default.map(DefaultVal::Array) }
     }
 
     pub fn asset(default: Option<Cow<'static, str>>) -> Self
     {
-        SchemaProperty{ component_type: "asset", default: default.map(DefaultVal::Str) }
+        Property{ component_type: "asset", default: default.map(DefaultVal::Str) }
     }
 
     pub fn audio(default: Option<Cow<'static, str>>) -> Self
     {
-        SchemaProperty{ component_type: "audio", default: default.map(DefaultVal::Str) }
+        Property{ component_type: "audio", default: default.map(DefaultVal::Str) }
     }
 
     pub fn boolean(default: Option<bool>) -> Self
     {
-        SchemaProperty{ component_type: "boolean", default: default.map(DefaultVal::Bool) }
+        Property{ component_type: "boolean", default: default.map(DefaultVal::Bool) }
     }
 
     pub fn color(default: Option<Cow<'static, str>>) -> Self
     {
-        SchemaProperty{ component_type: "color", default: default.map(DefaultVal::Str) }
+        Property{ component_type: "color", default: default.map(DefaultVal::Str) }
     }
 
     pub fn int(default: Option<i64>) -> Self
     {
-        SchemaProperty{ component_type: "int", default: default.map(DefaultVal::Int) }
+        Property{ component_type: "int", default: default.map(DefaultVal::Int) }
     }
 
     pub fn map(default: Option<Cow<'static, str>>) -> Self
     {
-        SchemaProperty{ component_type: "map", default: default.map(DefaultVal::Str) }
+        Property{ component_type: "map", default: default.map(DefaultVal::Str) }
     }
 
     pub fn model(default: Option<Cow<'static, str>>) -> Self
     {
-        SchemaProperty{ component_type: "model", default: default.map(DefaultVal::Str) }
+        Property{ component_type: "model", default: default.map(DefaultVal::Str) }
     }
 
     pub fn number(default: Option<f32>) -> Self
     {
-        SchemaProperty{ component_type: "number", default: default.map(DefaultVal::Float) }
+        Property{ component_type: "number", default: default.map(DefaultVal::Float) }
     }
 
     pub fn string(default: Option<Cow<'static, str>>) -> Self
     {
-        SchemaProperty{ component_type: "string", default: default.map(DefaultVal::Str) }
+        Property{ component_type: "string", default: default.map(DefaultVal::Str) }
     }
 
     pub fn vec2(default: Option<Vector2>) -> Self
     {
-        SchemaProperty{ component_type: "vec2", default: default.map(DefaultVal::Vec2) }
+        Property{ component_type: "vec2", default: default.map(DefaultVal::Vec2) }
     }
 
     pub fn vec3(default: Option<Vector3>) -> Self
     {
-        SchemaProperty{ component_type: "vec3", default: default.map(DefaultVal::Vec3) }
+        Property{ component_type: "vec3", default: default.map(DefaultVal::Vec3) }
     }
 
     pub fn vec4(default: Option<Vector4>) -> Self
     {
-        SchemaProperty{ component_type: "vec4", default: default.map(DefaultVal::Vec4) }
+        Property{ component_type: "vec4", default: default.map(DefaultVal::Vec4) }
     }
 }
 
