@@ -1,11 +1,15 @@
 use std::{borrow::Cow, fmt::{self, Display, Formatter}};
 
+pub trait Component: Display + std::fmt::Debug {}
+
 /// A macro to define a component struct. The component must be already registered 
 /// in aframe before this struct may be used (although constructing it before that
 /// is safe). There are 2 variation of syntax provided, depending on the desired 
 /// resulting `Display` implementation.
 /// 
-/// ```
+/// ```ignore
+/// use aframe::component_struct;
+/// 
 /// // Example 1, uses hard-coded display implementation:
 /// component_struct!{StructName, 
 ///     field_1: "field1Name" f32 = 1.5,
@@ -50,13 +54,14 @@ macro_rules! component_struct
                 write!(f, $fmt, $(self.$field),*)
             }
         }
-        impl AComponent for $name
+        impl ConstDefault for $name
         {
             const DEFAULT: Self = Self 
             {
                 $($field: $default),*
             };
         }
+        impl Component for $name {}
     }
 }
 
@@ -64,7 +69,7 @@ macro_rules! component_struct
 /// any number of fields to be left out (in which case defaults will be used). 
 /// Note that the ability to leave out fields does not extend to struct_like
 /// enum variants created in this macro.
-/// ```
+/// ```ignore
 /// // For example:
 /// use aframe::component;
 /// 
@@ -92,8 +97,10 @@ macro_rules! component
 }
 
 /// A macro to define a simple enum which implements Display.
-/// ```
+/// ```ignore
 /// // For example:
+/// use aframe::simple_enum;
+/// 
 /// simple_enum!
 /// (
 ///     Axis, 
@@ -121,8 +128,10 @@ macro_rules! simple_enum
 
 /// A macro to define an enum in which each field is struct-like. Works similarly
 /// to the `component_struct!` macro.
-/// ```
+/// ```ignore
 /// // For example:
+/// use aframe::complex_enum;
+/// 
 /// complex_enum!{LightType, 
 ///     Ambient "type: ambient; " => {},
 ///     Directional "type: directional; {}" => { shadow: Shadow },
@@ -165,13 +174,6 @@ macro_rules! complex_enum
             }
         }
     }
-}
-
-/// Trait shared by all components, defines a const DEFAULT used to simplify 
-/// construction.
-pub trait AComponent: Display
-{
-    const DEFAULT: Self;
 }
 
 /// The type here may look daunting, but all this is just to allow you to create

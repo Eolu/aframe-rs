@@ -28,7 +28,7 @@ use js_sys::{Object, Reflect};
 /// | play | JsValue created from a js_sys::Function() | Called when the entity or scene resumes |
 /// | update_schema | JsValue created from a js_sys::Function(data) | if defined, is called on every update in order to check if the schema needs to be dynamically modified |
 ///
-/// ```
+/// ```ignore
 /// // Example: 
 /// component_def!
 /// (

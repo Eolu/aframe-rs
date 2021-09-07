@@ -1,5 +1,9 @@
 pub mod color;
 
+use std::{borrow::Cow, fmt::Display};
+use serde::Serialize;
+pub use js_sys::Function;
+
 /// Allows a javascript function to be defined inline. Accepts 2 forms of syntax:
 /// `js!(<js code>);`
 /// `js!(arg1, arg2, arg3 =>> <js code>)`
@@ -12,17 +16,72 @@ macro_rules! js
 {
     ($($arg:ident),* =>> $($tt:tt)*) => 
     {
-        js_sys::Function::new_with_args(stringify!($($arg), *), stringify!($($tt)*))
+        $crate::utils::Function::new_with_args(stringify!($($arg), *), stringify!($($tt)*))
     };
     ($($tt:tt)*) => 
     {
-        js_sys::Function::new_no_args(stringify!($($tt)*))
+        $crate::utils::Function::new_no_args(stringify!($($tt)*))
     }
 }
 
-use std::fmt::Display;
-use serde::Serialize;
+/// This trait sholud be implemented by all components, defines a const DEFAULT 
+/// used to simplify construction.
+pub trait ConstDefault
+{
+    const DEFAULT: Self;
+}
 
+/// Trait used to generate HTML from aframe objects.
+pub trait Htmlify
+{
+    const TAG: &'static str;
+    fn attributes(&self) -> Vec<Attribute>
+    {
+        vec!()
+    }
+    fn as_raw_html(&self) -> String 
+    {
+        format!
+        (
+            "<{0} {2}> {1} </{0}>",
+            Self::TAG,
+            self.inner_html(),
+            self.attributes()
+                .iter()
+                .map(Attribute::to_string)
+                .collect::<Vec<String>>()
+                .join(" ")
+        )
+    }
+    fn inner_html(&self) -> Cow<'static, str>
+    {
+        Cow::Borrowed("")
+    }
+}
+
+/// HTML Attribute wrapper
+#[derive(PartialEq, Debug)]
+pub struct Attribute
+{
+    pub name: Cow<'static, str>, 
+    pub value: Cow<'static, str>
+}
+impl Attribute
+{
+    pub fn new(name: Cow<'static, str>, value: Cow<'static, str>) -> Self
+    {
+        Attribute { name, value }
+    }
+}
+impl Display for Attribute
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result 
+    {
+        write!(f, "{}=\"{}\"", self.name, self.value)
+    }
+}
+
+/// A 2-dimensional vector
 #[derive(Debug, Clone, Copy, PartialEq, Serialize)]
 pub struct Vector2
 {
@@ -30,6 +89,7 @@ pub struct Vector2
     pub y: f64
 }
 
+/// A 3-dimensional vector
 #[derive(Debug, Clone, Copy, PartialEq, Serialize)]
 pub struct Vector3
 {
@@ -38,6 +98,7 @@ pub struct Vector3
     pub z: f64
 }
 
+/// A 4-dimensional vector
 #[derive(Debug, Clone, Copy, PartialEq, Serialize)]
 pub struct Vector4
 {
