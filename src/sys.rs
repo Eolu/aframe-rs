@@ -7,6 +7,8 @@ use wasm_bindgen::prelude::*;
 extern 
 {
     #[wasm_bindgen(js_namespace = AFRAME)]
+    pub fn registerPrimitive(name: &str, definition: JsValue);
+    #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerComponent(name: &str, data: JsValue);
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerShader(name: &str, data: JsValue);

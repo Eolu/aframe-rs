@@ -1,9 +1,12 @@
 #![doc = include_str!("../README.md")]
 
+#[cfg(test)]
+mod tests;
+
 pub mod sys;
 pub mod shader;
 pub mod component;
-mod utils;
+pub mod utils;
 pub use utils::*;
-mod entity;
-
+pub mod entity;
+pub use entity::*;

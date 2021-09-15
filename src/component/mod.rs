@@ -102,8 +102,8 @@ component_struct!
 );
 complex_enum!
 (AnimationLoop, 
-    Amount "loop: {};" => { looping: u32 },
-    Forever "loop: true;" => {}
+    Amount "{}" => { looping: u32 },
+    Forever "true" => {}
 );
 simple_enum!
 (Autoplay, 
@@ -327,7 +327,7 @@ simple_enum!
     Subtractive => "subtractive", 
     Multiply => "multiply"
 );
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(transparent)]
 pub struct MaterialProps(pub Cow<'static, [(Cow<'static, str>, Cow<'static, str>)]>);
 impl MaterialProps

@@ -1,6 +1,10 @@
 use std::{borrow::Cow, fmt::{self, Display, Formatter}};
 
-pub trait Component: Display + std::fmt::Debug {}
+pub trait Component: Display + std::fmt::Debug + std::any::Any
+{
+    fn clone(&self) -> Box<dyn Component>;
+    fn eq(&self, other: &'static dyn Component) -> bool;
+}
 
 /// A macro to define a component struct. The component must be already registered 
 /// in aframe before this struct may be used (although constructing it before that
@@ -40,7 +44,7 @@ macro_rules! component_struct
     };
     ($name:ident $fmt:expr $(, $field:ident: $ty:ty = $default:expr)*) => 
     {
-        #[derive(Debug)]
+        #[derive(Debug, Clone, PartialEq)]
         pub struct $name
         {
             $(
@@ -61,7 +65,21 @@ macro_rules! component_struct
                 $($field: $default),*
             };
         }
-        impl Component for $name {}
+        impl Component for $name 
+        {
+            fn clone(&self) -> Box<dyn Component>
+            {
+                Box::new(Clone::clone(self))
+            }
+            fn eq(&self, other: &'static dyn Component) -> bool
+            {
+                match (&&*other as &dyn std::any::Any).downcast_ref::<&&$name>()
+                {
+                    Some(other) => self == **other,
+                    None => false
+                }
+            }
+        }
     }
 }
 
@@ -158,7 +176,7 @@ macro_rules! complex_enum
 {
     ($name:ident $(, $variant:ident $fmt:expr => { $($field:ident: $ty:ty),* })*) => 
     {
-        #[derive(Debug)]
+        #[derive(Debug, Clone, PartialEq)]
         pub enum $name 
         {
             $($variant { $($field: $ty),* }),*
@@ -179,12 +197,12 @@ macro_rules! complex_enum
 /// The type here may look daunting, but all this is just to allow you to create
 /// a `Cow<'static, [T]>` field in a component.
 #[repr(transparent)]
-#[derive(Debug)]
-pub struct List<T: Display + ToOwned + std::fmt::Debug + 'static> 
+#[derive(Debug, Clone, PartialEq)]
+pub struct List<T: Display + ToOwned + std::fmt::Debug + Clone + PartialEq + 'static> 
 (pub Cow<'static, [T]>)
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug;
 
-impl<T: Display + ToOwned + 'static + std::fmt::Debug> Display for List<T>
+impl<T: Display + ToOwned + 'static + std::fmt::Debug + Clone + PartialEq> Display for List<T>
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result 
@@ -192,20 +210,20 @@ where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
         let len = self.0.len();
         for (i, item) in self.0.iter().enumerate()
         {
-            if i == len - 1
+            if i < len - 1
             {
                 write!(f, "{},", item)?;
             }
             else
             {
-                std::fmt::Debug::fmt(&item, f)?;
+                std::fmt::Display::fmt(&item, f)?;
             }
         }
         Ok(())
     }
 }
 
-impl<T: Display + ToOwned + std::fmt::Debug + 'static> List<T>
+impl<T: Display + ToOwned + std::fmt::Debug + 'static + Clone + PartialEq> List<T>
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
 {
     pub const DEFAULT: List<T> = List(Cow::Borrowed(&[]));

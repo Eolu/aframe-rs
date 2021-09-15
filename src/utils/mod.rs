@@ -60,7 +60,7 @@ pub trait Htmlify
 }
 
 /// HTML Attribute wrapper
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Eq, Clone, Debug)]
 pub struct Attribute
 {
     pub name: Cow<'static, str>, 
@@ -68,9 +68,9 @@ pub struct Attribute
 }
 impl Attribute
 {
-    pub fn new(name: Cow<'static, str>, value: Cow<'static, str>) -> Self
+    pub fn new(name: impl Into<Cow<'static, str>>, value: impl Into<Cow<'static, str>>) -> Self
     {
-        Attribute { name, value }
+        Attribute { name: name.into(), value: value.into() }
     }
 }
 impl Display for Attribute
