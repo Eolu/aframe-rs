@@ -10,8 +10,8 @@ use crate::component_struct;
 use crate::simple_enum;
 use crate::complex_enum;
 
-component_struct!(Position "{} {} {}", x: f32 = 0.0, y: f32 = 0.0, z: f32 = 0.0);
-component_struct!(Rotation "{} {} {}", x: f32 = 0.0, y: f32 = 0.0, z: f32 = 0.0);
+component_struct!(Position :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0);
+component_struct!(Rotation :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0);
 component_struct!
 (Sound, 
     src: "src" Cow<'static, str> = Cow::Borrowed(""),
@@ -21,10 +21,10 @@ component_struct!
     looping: "loop" bool = false
 );
 component_struct!
-(Light "{}; color: {}; intensity: {}", 
-    light_type: LightType = LightType::Directional { shadow: OptionalDirectionalShadow::NoCast{} },
-    color: color::Rgb = color::WHITE,
-    intensity: f32 = 1.0
+(Light, 
+    light_type: "" LightType = LightType::Directional { shadow: OptionalDirectionalShadow::NoCast{} },
+    color: "color" color::Rgb = color::WHITE,
+    intensity: "intensity" f32 = 1.0
 );
 complex_enum!
 (LightType, 
@@ -54,7 +54,7 @@ component_struct!
     shadow_camera_near: "shadowCameraNear" f32 = 0.5,
     shadow_camera_visible: "shadowCameraVisible" bool = false,
     shadow_map_height: "shadowMapHeight" u32 = 512,
-    shadow_map_width: "shadowMapWdith" u32 = 512,
+    shadow_map_width: "shadowMapWidth" u32 = 512,
     shadow_camera_fov: "shadowCameraFov" f32 = 50.0
 );
 component_struct!
@@ -64,7 +64,7 @@ component_struct!
     shadow_camera_near: "shadowCameraNear" f32 = 0.5,
     shadow_camera_visible: "shadowCameraVisible" bool = false,
     shadow_map_height: "shadowMapHeight" u32 = 512,
-    shadow_map_width: "shadowMapWdith" u32 = 512,
+    shadow_map_width: "shadowMapWidth" u32 = 512,
     shadow_camera_bottom: "shadowCameraBottom" f32 = -5.0,
     shadow_camera_left: "shadowCameraLeft" f32 = -5.0,
     shadow_camera_right: "shadowCameraRight" f32 = 5.0,
@@ -148,9 +148,26 @@ simple_enum!
     EaseInOutElastic => "easeInOutElastic",
     Linear => "linear"
 );
+// TODO: This is lazily made, make it nice!
 component_struct!
-(Geometry "{}; skipCache: {}",
-    primitive: GeometryPrimitive = GeometryPrimitive::Box
+{
+    RayCaster,
+    auto_refresh: "autoRefresh" bool = true,
+    direction: "direction" Vector3 = Vector3 { x: 0.0, y: 0.0, z: -1.0 },
+    enabled: "enabled" bool = true,
+    far: "far" Cow<'static, str> = Cow::Borrowed("Infinity"),
+    interval: "interval" u32 = 0,
+    line_color: "lineColor" color::Rgb = color::WHITE,
+    line_opacity: "lineOpacity" color::Rgb = color::WHITE,
+    near: "near" Cow<'static, str> = Cow::Borrowed("0"),
+    objects: "objects" Cow<'static, str> = Cow::Borrowed("null"),
+    origin: "origin" Vector3 = Vector3 { x: 0.0, y: 0.0, z: 0.0 },
+    show_line: "showLine" bool = false,
+    use_world_coordinates: "useWorldCoordinates" bool = false
+}
+component_struct!
+(Geometry,
+    primitive: "" GeometryPrimitive = GeometryPrimitive::Box
     {
         width: 1.0,
         height: 1.0,
@@ -159,7 +176,7 @@ component_struct!
         segments_height: 1,
         segments_depth: 1,
     },
-    skip_cache: bool = false
+    skip_cache: "skipCache" bool = false
 );
 complex_enum!
 (GeometryPrimitive, 
@@ -286,26 +303,22 @@ component_struct!
     receive: "receive" bool = true
 );
 component_struct!
-(Material 
-    "alphaTest: {}; depthTest: {}; flatShading: {}; npot: {}; \
-    offset: {}; opacity: {}; repeat: {}; shader: {}; \
-    side: {}; transparent: {}; vertexColors: {}; visible: {}; \
-    blending: {}; dithering: {}; {}", 
-    alpha_test: f32 = 0.0,
-    depth_test: bool = true,
-    flat_shading: bool = false,
-    npot: bool = false,
-    offset: Vector2 = Vector2 { x: 0.0, y: 0.0 },
-    opacity: f32 = 1.0,
-    repeat: Vector2 = Vector2 { x: 1.0, y: 1.0 },
-    shader: Cow<'static, str> = Cow::Borrowed("standard"),
-    side: MaterialSide = MaterialSide::Front,
-    transparent: bool = false,
-    vertex_colors: VertexColors = VertexColors::None,
-    visible: bool = true,
-    blending: Blending = Blending::Normal,
-    dithering: bool = true,
-    props: MaterialProps = MaterialProps::DEFAULT
+(Material, 
+    alpha_test: "alphaTest" f32 = 0.0,
+    depth_test: "depthTest" bool = true,
+    flat_shading: "flatShading" bool = false,
+    npot: "npot" bool = false,
+    offset: "offset" Vector2 = Vector2 { x: 0.0, y: 0.0 },
+    opacity: "opacity" f32 = 1.0,
+    repeat: "repeat" Vector2 = Vector2 { x: 1.0, y: 1.0 },
+    shader: "shader" Cow<'static, str> = Cow::Borrowed("standard"),
+    side: "side" MaterialSide = MaterialSide::Front,
+    transparent: "transparent" bool = false,
+    vertex_colors: "vertexColors" VertexColors = VertexColors::None,
+    visible: "visible" bool = true,
+    blending: "blending" Blending = Blending::Normal,
+    dithering: "dithering" bool = true,
+    props: "" MaterialProps = MaterialProps::DEFAULT
 );
 simple_enum!
 (MaterialSide, 
@@ -327,7 +340,7 @@ simple_enum!
     Subtractive => "subtractive", 
     Multiply => "multiply"
 );
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize)]
 #[repr(transparent)]
 pub struct MaterialProps(pub Cow<'static, [(Cow<'static, str>, Cow<'static, str>)]>);
 impl MaterialProps

@@ -8,7 +8,7 @@ macro_rules! def_color
 {
     ($name:ident $($field:ident)*) => 
     {
-        #[derive(Debug, Clone, Copy, PartialEq)]
+        #[derive(Debug, Clone, Copy, PartialEq, serde::Serialize)]
         pub struct $name
         {
             $(pub $field: u8),*

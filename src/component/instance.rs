@@ -1,9 +1,56 @@
-use std::{borrow::Cow, fmt::{self, Display, Formatter}};
+use std::
+{
+    borrow::Cow, 
+    collections::HashMap, 
+    fmt::{self, Display, Formatter}, 
+    ops::{Deref, DerefMut}
+};
 
 pub trait Component: Display + std::fmt::Debug + std::any::Any
 {
     fn clone(&self) -> Box<dyn Component>;
     fn eq(&self, other: &'static dyn Component) -> bool;
+    fn as_map(&self) -> HashMap<Cow<'static, str>, Cow<'static, str>>;
+}
+
+#[derive(Default, Debug)]
+#[repr(transparent)]
+pub struct ComponentVec(pub Vec<(Cow<'static, str>, Box<dyn Component>)>);
+
+impl Deref for ComponentVec
+{
+    type Target = Vec<(Cow<'static, str>, Box<dyn Component>)>;
+    fn deref(&self) -> &Self::Target
+    {
+        &self.0
+    }
+}
+
+impl DerefMut for ComponentVec
+{
+    fn deref_mut(&mut self) -> &mut Self::Target
+    {
+        &mut self.0
+    }
+}
+
+impl PartialEq for ComponentVec
+{
+    fn eq(&self, other: &Self) -> bool 
+    {
+        self.0.len() == other.0.len() &&
+        matches!(self.0.iter().enumerate().filter(|(i, (_name, cmp))| 
+            cmp.eq(&*unsafe{std::mem::transmute::<&ComponentVec, &'static ComponentVec>(other)}
+                .0[*i].1)).next(), None)
+    }
+}
+
+impl Clone for ComponentVec
+{
+    fn clone(&self) -> Self 
+    {
+        Self(self.0.iter().map(|(name, cmp)| (name.clone(), (*cmp).clone())).collect())
+    }
 }
 
 /// A macro to define a component struct. The component must be already registered 
@@ -40,11 +87,11 @@ macro_rules! component_struct
 {
     ($name:ident $(, $field:ident: $field_name:literal $ty:ty = $default:expr)*) => 
     {
-        component_struct!($name concat!($($field_name, ": {};"),*) $(, $field: $ty = $default)*);
+        component_struct!($name concat!($($field_name, ": {};"),*) $(, $field: $field_name $ty = $default)*);
     };
-    ($name:ident $fmt:expr $(, $field:ident: $ty:ty = $default:expr)*) => 
+    ($name:ident $(:$alt:ident)? $fmt:expr $(, $field:ident: $field_name:literal $ty:ty = $default:expr)*) => 
     {
-        #[derive(Debug, Clone, PartialEq)]
+        #[derive(Debug, Clone, PartialEq, serde::Serialize)]
         pub struct $name
         {
             $(
@@ -55,7 +102,27 @@ macro_rules! component_struct
         {
             fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result 
             {
-                write!(f, $fmt, $(self.$field),*)
+                if stringify!($($alt)?).len() < 2
+                {
+                    $(
+                        if self.$field != Self::DEFAULT.$field
+                        {
+                            if $field_name.len() <= 1
+                            {
+                                write!(f, "{};", self.$field)?;
+                            }
+                            else
+                            {
+                                write!(f, concat!($field_name, ": {};"), self.$field)?;
+                            }
+                        }
+                    )*
+                    Ok(())
+                }
+                else
+                {
+                    write!(f, $fmt, $(self.$field),*)
+                }
             }
         }
         impl ConstDefault for $name
@@ -78,6 +145,12 @@ macro_rules! component_struct
                     Some(other) => self == **other,
                     None => false
                 }
+            }
+            fn as_map(&self) -> std::collections::HashMap<Cow<'static, str>, Cow<'static, str>>
+            {
+                let mut map = std::collections::HashMap::new();
+                $( map.insert(stringify!($field).into(), self.$field.to_string().into()); )*
+                map
             }
         }
     }
@@ -132,7 +205,7 @@ macro_rules! simple_enum
 {
     ($name:ident $(, $variant:ident => $s:literal)*) => 
     {
-        #[derive(Clone, Copy, PartialEq, Debug)]
+        #[derive(Clone, Copy, PartialEq, Debug, serde::Serialize)]
         pub enum $name {$($variant),* }
         impl std::fmt::Display for $name
         {
@@ -176,7 +249,7 @@ macro_rules! complex_enum
 {
     ($name:ident $(, $variant:ident $fmt:expr => { $($field:ident: $ty:ty),* })*) => 
     {
-        #[derive(Debug, Clone, PartialEq)]
+        #[derive(Debug, Clone, PartialEq, serde::Serialize)]
         pub enum $name 
         {
             $($variant { $($field: $ty),* }),*
@@ -197,12 +270,12 @@ macro_rules! complex_enum
 /// The type here may look daunting, but all this is just to allow you to create
 /// a `Cow<'static, [T]>` field in a component.
 #[repr(transparent)]
-#[derive(Debug, Clone, PartialEq)]
-pub struct List<T: Display + ToOwned + std::fmt::Debug + Clone + PartialEq + 'static> 
+#[derive(Debug, Clone, PartialEq, serde::Serialize)]
+pub struct List<T: Display + ToOwned + std::fmt::Debug + Clone + PartialEq + serde::Serialize + 'static> 
 (pub Cow<'static, [T]>)
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug;
 
-impl<T: Display + ToOwned + 'static + std::fmt::Debug + Clone + PartialEq> Display for List<T>
+impl<T: Display + ToOwned + 'static + std::fmt::Debug + Clone + PartialEq + serde::Serialize> Display for List<T>
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result 
@@ -223,7 +296,7 @@ where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
     }
 }
 
-impl<T: Display + ToOwned + std::fmt::Debug + 'static + Clone + PartialEq> List<T>
+impl<T: Display + ToOwned + std::fmt::Debug + 'static + Clone + PartialEq + serde::Serialize> List<T>
 where [T]: ToOwned, <[T] as ToOwned>::Owned: std::fmt::Debug
 {
     pub const DEFAULT: List<T> = List(Cow::Borrowed(&[]));

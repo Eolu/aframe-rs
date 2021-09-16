@@ -1,54 +1,116 @@
-mod primitive;
+pub mod primitive;
 
 use std::borrow::Cow;
-use crate::{Attribute, Htmlify, component::Component};
+use crate::{Attribute, ComponentVec, Htmlify, component::Component};
 
+#[macro_export]
+macro_rules! entity
+{
+    ( 
+        $(attributes: $(($attr_id:literal, $attr_value:expr)),*)? $(,)?
+        $(components: $(($cmp_id:literal, $cmp_value:expr)),*)? $(,)? 
+        $(children: $($child:expr),*)? 
+    ) => 
+    {
+        Entity::new
+        (
+            attributes_vec!
+            {
+                $($(($attr_id, $attr_value)),*)?
+            },
+            components_vec!
+            {
+                $($(($cmp_id, $cmp_value)),*)?
+            },
+            children_vec!
+            {
+                $($($child),*)?
+            }
+        )
+    };
+    ( 
+        primitive: $name:literal,
+        $(attributes: $(($attr_id:literal, $attr_value:expr)),*)? $(,)?
+        $(components: $(($cmp_id:literal, $cmp_value:expr)),*)? $(,)? 
+        $(children: $($child:expr),*)? 
+    ) => 
+    {
+        Entity::new_primitive
+        (
+            std::borrow::Cow::Borrowed($name),
+            attributes_vec!
+            {
+                $($(($attr_id, $attr_value)),*)?
+            },
+            components_vec!
+            {
+                $($(($cmp_id, $cmp_value)),*)?
+            },
+            children_vec!
+            {
+                $($($child),*)?
+            }
+        )
+    }
+}
 
-#[derive(Default, Debug)]
+#[macro_export]
+macro_rules! attributes_vec
+{
+    ( 
+        $(($attr_id:literal, $attr_value:expr)),*
+    ) => 
+    {
+        vec![ $(Attribute::new($attr_id, $attr_value)),* ]
+    }
+}
+
+#[macro_export]
+macro_rules! components_vec
+{
+    ( 
+        $(($cmp_id:literal, $cmp_value:expr)),* 
+    ) => 
+    {
+        vec![ $(($cmp_id.into(), Box::new($cmp_value))),* ]
+    }
+}
+
+#[macro_export]
+macro_rules! children_vec
+{
+    ( 
+        $($child:expr),*
+    ) => 
+    {
+        vec![ $($child),* ]
+    }
+}
+
+#[derive(Default, Debug, Clone, PartialEq)]
 pub struct Entity
 {
+    primitive: Option<Cow<'static, str>>,
     attributes: Vec<Attribute>,
-    components: Vec<(Cow<'static, str>, Box<dyn Component>)>,
+    components: ComponentVec,
     children: Vec<Entity>
 }
-
-impl PartialEq for Entity
-{
-    fn eq(&self, other: &Self) -> bool 
-    {
-        self.attributes == other.attributes && 
-        self.children == other.children &&
-        self.components.len() == other.components.len() &&
-        matches!(self.components.iter().enumerate().filter(|(i, (_name, cmp))| 
-            cmp.eq(&*unsafe{std::mem::transmute::<&Entity, &'static Entity>(other)}
-                .components[*i].1)).next(), None)
-    }
-}
-
-impl Clone for Entity
-{
-    fn clone(&self) -> Self 
-    {
-        Self 
-        { 
-            attributes: self.attributes.clone(), 
-            components: self.components.iter().map(|(name, cmp)| (name.clone(), (*cmp).clone())).collect(), 
-            children: self.children.clone() 
-        }
-    }
-}
-
 
 impl Entity
 {
     pub fn new(attributes: Vec<Attribute>, components: Vec<(Cow<'static, str>, Box<dyn Component>)>, children: Vec<Entity>) -> Self
     {
-        Self { attributes, components, children }
+        Self { primitive: None, attributes, components: ComponentVec(components), children }
+    }
+
+    pub fn new_primitive(tag: Cow<'static, str>, attributes: Vec<Attribute>, components: Vec<(Cow<'static, str>, Box<dyn Component>)>, children: Vec<Entity>) -> Self
+    {
+        Self { primitive: Some(tag), attributes, components: ComponentVec(components), children }
     }
 
     pub fn with_components(components: Vec<(Cow<'static, str>, Box<dyn Component>)>) -> Self
     {
-        Self { attributes: vec!(), components, children: vec!() }
+        Self { primitive: None, attributes: vec!(), components: ComponentVec(components), children: vec!() }
     }
 
     pub fn attributes(&self) -> &Vec<Attribute>
@@ -80,21 +142,14 @@ impl Entity
     {
         &mut self.children
     }
-}
 
-impl Htmlify for Entity
-{
-    const TAG: &'static str = "a-entity";
-    fn attributes(&self) -> Vec<Attribute>
+    pub fn tag(&self) -> Cow<'static, str>
     {
-        self.components.iter()
-            .map(Attribute::from)
-            .chain(self.attributes.iter().map(Attribute::clone))
-            .collect()
-    }
-    fn inner_html(&self) -> Cow<'static, str>
-    {
-        self.children.iter().map(|ent| ent.as_raw_html()).collect::<Vec<String>>().join("").into()
+        match self.primitive
+        {
+            Some(ref tag) => tag.clone(),
+            None => Cow::Borrowed(Self::TAG)
+        }
     }
 }
 
@@ -105,7 +160,7 @@ impl From<&(Cow<'static, str>, Box<dyn Component>)> for Attribute
         Attribute 
         { 
             name: name.to_owned(), 
-            value: cmp.to_string().into() 
+            value: format!("{}", cmp).into() 
         }
     }
 }
