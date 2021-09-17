@@ -148,22 +148,49 @@ simple_enum!
     EaseInOutElastic => "easeInOutElastic",
     Linear => "linear"
 );
-// TODO: This is lazily made, make it nice!
 component_struct!
 {
     RayCaster,
     auto_refresh: "autoRefresh" bool = true,
     direction: "direction" Vector3 = Vector3 { x: 0.0, y: 0.0, z: -1.0 },
     enabled: "enabled" bool = true,
-    far: "far" Cow<'static, str> = Cow::Borrowed("Infinity"),
+    far: "far" DistancePlane = DistancePlane::Infinity{},
     interval: "interval" u32 = 0,
     line_color: "lineColor" color::Rgb = color::WHITE,
     line_opacity: "lineOpacity" color::Rgb = color::WHITE,
-    near: "near" Cow<'static, str> = Cow::Borrowed("0"),
-    objects: "objects" Cow<'static, str> = Cow::Borrowed("null"),
+    near: "near" DistancePlane = DistancePlane::Distance{distance: 0.0},
+    objects: "objects" List<Cow<'static, str>> = List(Cow::Borrowed(&[Cow::Borrowed("null")])),
     origin: "origin" Vector3 = Vector3 { x: 0.0, y: 0.0, z: 0.0 },
     show_line: "showLine" bool = false,
     use_world_coordinates: "useWorldCoordinates" bool = false
+}
+complex_enum! 
+{
+    DistancePlane,
+    Infinity "Infinity" => {},
+    Distance "{}" => {distance: f32}
+}
+component_struct!
+{
+    Camera,
+    active: "active" bool = true,
+    far: "far" u32 = 10000,
+    fov: "fov" f32 = 80.0,
+    near: "near" f32 = 0.05,
+    spectator: "spectator" bool = false,
+    zoom: "zoom" f32 = 1.0
+}
+component_struct!
+{
+    LookControls,
+    enabled: "enabled" bool = true,
+    hmd_enabled: "hmdEnabled" bool = true,
+    reverse_mouse_drag: "reverseMouseDrag" bool = false,
+    reverse_touch_drag: "reverseTouchDrag" bool = false,
+    touch_enabled: "touchEnabled" bool = true,
+    mouse_enabled: "mouseEnabled" bool = true,
+    pointer_lock_enabled: "pointerLockEnabled" bool = false,
+    magic_window_tracking_enabled: "magicWindowTrackingEnabled" bool = true
 }
 component_struct!
 (Geometry,

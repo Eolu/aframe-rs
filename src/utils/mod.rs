@@ -3,7 +3,7 @@ pub mod htmlify;
 
 pub use htmlify::*;
 
-use std::{borrow::Cow, fmt::Display};
+use std::fmt::Display;
 use serde::Serialize;
 pub use js_sys::Function;
 
