@@ -1,7 +1,18 @@
 [package]
 name = "aframe"
-version = "0.1.5"
+version = "0.1.6"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+authors = ["Griffin O'Neill <gsoneill1003@gmail.com>"]
 edition = "2018"
+description = """
+High-level Aframe VR bindings for Rust WASM
+"""
+keywords = ["vr", "aframe", "wasm", "web"]
+homepage = "https://github.com/Eolu/aframe-rs"
+repository = "https://github.com/Eolu/aframe-rs"
+categories = ["api-bindings", "wasm", "graphics", "multimedia"]
+documentation = "https://docs.rs/aframe-rs"
 
 [lib]
 crate-type = ["rlib", "cdylib"]
