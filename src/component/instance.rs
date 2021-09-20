@@ -6,33 +6,11 @@ use std::
     ops::{Deref, DerefMut}
 };
 
-pub trait Component: Display + std::fmt::Debug + std::any::Any + AsMap
+pub trait Component: Display + std::fmt::Debug + std::any::Any
 {
     fn clone(&self) -> Box<dyn Component>;
     fn eq(&self, other: &'static dyn Component) -> bool;
-}
-
-pub trait AsMap
-{
     fn as_map(&self) -> HashMap<Cow<'static, str>, Cow<'static, str>>;
-}
-
-impl AsMap for String
-{
-    fn as_map(&self) -> HashMap<Cow<'static, str>, Cow<'static, str>>
-    {
-        let mut map = HashMap::new();
-        for entry_str in self.split(";").map(str::trim)
-        {
-            if let Some((k, v)) = entry_str
-                .split_once(":")
-                .map(|(k, v)| (k.trim(), v.trim()))
-            {
-                map.insert(k.to_owned().into(), v.to_owned().into());
-            }
-        }
-        map
-    }
 }
 
 #[derive(Default, Debug)]
@@ -154,22 +132,6 @@ macro_rules! component_struct
                 $($field: $default),*
             };
         }
-        impl AsMap for $name 
-        {
-            fn as_map(&self) -> std::collections::HashMap<Cow<'static, str>, Cow<'static, str>>
-            {
-                let mut map = std::collections::HashMap::new();
-                $( if $field_name.len() < 1
-                {
-                    map.extend(self.$field.to_string().as_map())
-                }
-                else
-                {
-                    map.insert($field_name.into(), self.$field.to_string().into());
-                })*
-                map
-            }
-        }
         impl Component for $name 
         {
             fn clone(&self) -> Box<dyn Component>
@@ -183,6 +145,32 @@ macro_rules! component_struct
                     Some(other) => self == **other,
                     None => false
                 }
+            }
+            fn as_map(&self) -> std::collections::HashMap<Cow<'static, str>, Cow<'static, str>>
+            {
+                let mut map = std::collections::HashMap::new();
+                $( if $field_name.len() < 1
+                {
+                    let mut inner_map = std::collections::HashMap::new();
+                    for (k, v) in self.$field
+                        .to_string()
+                        .split(";")
+                        .map(str::trim)
+                        .filter_map(|s| s.split_once(":"))
+                    {
+                        inner_map.insert
+                        (
+                            k.trim().to_owned().into(), 
+                            v.trim().to_owned().into()
+                        );
+                    }
+                    map.extend(inner_map);
+                }
+                else
+                {
+                    map.insert($field_name.into(), self.$field.to_string().into());
+                })*
+                map
             }
         }
     }

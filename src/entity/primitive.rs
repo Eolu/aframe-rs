@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use super::*;
 use serde::{Serialize, Serializer};
 
+/// Macro to create a new primitive
 #[macro_export]
 macro_rules! primitive
 {
@@ -23,6 +24,7 @@ macro_rules! primitive
     }
 }
 
+/// Contains primitive definition which may be registered to aframe
 #[derive(Serialize, Clone)]
 pub struct PrimitiveReg
 {
@@ -33,6 +35,8 @@ pub struct PrimitiveReg
 
 impl PrimitiveReg
 {
+    /// Create a new primitive definition. This is more easily done with the 
+    /// `primitive!` macro.
     pub fn new
     (
         default_components: HashMap<Cow<'static, str>, Box<dyn Component>>, 
@@ -58,6 +62,7 @@ impl PrimitiveReg
     }
 }
 
+/// Internal wrapper for component cloning and serialization
 #[repr(transparent)]
 struct ComponentBox(Box<dyn Component>);
 
