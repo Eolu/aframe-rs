@@ -2,7 +2,7 @@ use crate::sys::registerPrimitive;
 use std::collections::HashMap;
 
 use super::*;
-use serde::{Serialize, Serializer};
+use serde::Serialize;
 
 /// Macro to create a new primitive
 #[macro_export]

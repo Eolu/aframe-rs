@@ -6,8 +6,6 @@ use std::
     ops::{Deref, DerefMut}
 };
 
-use serde::{Serialize, Serializer};
-
 pub trait Component: Display + std::fmt::Debug + std::any::Any
 {
     fn clone(&self) -> Box<dyn Component>;
@@ -15,10 +13,10 @@ pub trait Component: Display + std::fmt::Debug + std::any::Any
     fn as_map(&self) -> HashMap<Cow<'static, str>, Cow<'static, str>>;
 }
 
-impl Serialize for Box<dyn Component>
+impl serde::Serialize for Box<dyn Component>
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where S: Serializer 
+    where S: serde::Serializer 
     {
         self.as_map().serialize(serializer)
     }
