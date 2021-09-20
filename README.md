@@ -4,6 +4,21 @@ This is an [Aframe](https://aframe.io/) library for rust. It's still fairly expe
 
 # API
 
+## Scene
+
+The `scene!` macro is provided to define a `Scene` struct. Its signature is as follows:
+
+```rust
+( 
+    $(attributes: $(($attr_id:literal, $attr_value:expr)),*)? $(,)?
+    assets: $assets:expr,
+    $(components: $(($cmp_id:literal, $cmp_value:expr)),*)? $(,)? 
+    $(children: $($child:expr),*)? 
+)
+```
+
+See the bottom of this README for a full example of a scene definition.
+
 ## Components
 
 ### High-level API
@@ -358,9 +373,73 @@ Shader::new
 ).register("strobe")?;
 ```
 
-## Low-level API
+## Htmlify
 
-TODO
+The `Htmlify` trait is defined for all components, entities, and scenes.
+
+It contains the following required definition:
+```rust
+const TAG: &'static str;
+```
+and the following optional defintions:
+```rust
+fn attributes(&self) -> Vec<Attribute>;
+fn inner_html(&self) -> Cow<'static, str>;
+```
+as well as the following definiton which should not need to be implemented, but may on occasion be useful to be overridden:
+```rust
+fn as_raw_html(&self) -> String 
+{
+    format!
+    (
+        "<{0} {2}> {1} </{0}>",
+        Self::TAG,
+        self.inner_html(),
+        self.attributes()
+            .iter()
+            .map(Attribute::to_string)
+            .collect::<Vec<String>>()
+            .join(" ")
+    )
+}
+```
+
+## Assets
+
+The `assets!` and `mixin!` macros are provided to define an `Assets` struct. Their signatures are as follows:
+
+Assets:
+```rust
+(timeout: $timeout:expr, $($asset:expr),*) 
+```
+- OR -
+```rust
+($($asset:expr),*)
+```
+Mixins:
+```rust
+($id:expr, $(($cmp_id:literal, $cmp_value:expr)),*)
+```
+
+An example:
+
+```rust
+assets!
+{
+    Image::new("ramen", "/pics/ramen.png"),
+    Image::new("noise", "/pics/noise.bmp"),
+    Audio::new("ambient_music", "/audio/Ephemeral/Coin Machine.mp3"),
+    mixin!
+    {
+        "intersect_ray", 
+        ("raycaster", component!
+        {
+            RayCaster,
+            objects: List(Cow::Borrowed(&[Cow::Borrowed("#ramen-cube, #water")]))
+        })
+    }
+},
+```
 
 ## Sys API
 
