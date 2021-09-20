@@ -328,6 +328,40 @@ unsafe
 
 ```
 
+## Shaders
+
+## High-level API
+
+The `Shader` struct provides all the tools necessary to define an Aframe shader. The [maplit](https://docs.rs/maplit/1.0.2/maplit/) crate is recommended for simplifying shader definitions. See below:
+
+```rust
+use maplit::*;
+use aframe::shader::*;
+
+pub const SIMPLE_VS: &str = include_str!("./SOME_PATH/glsl/simple.vs");
+pub const STROBE_FS: &str = include_str!("./SOME_PATH/glsl/strobe.fs");
+
+Shader::new
+(
+    hashmap!
+    {
+        "speedMult".into() => Property::number(IsUniform::Yes, 1.0.into()),
+        "alpha".into() => Property::number(IsUniform::Yes, 1.0.into()),
+        "alpha2".into() => Property::number(IsUniform::Yes, 1.0.into()),
+        "color".into() => Property::color(IsUniform::Yes, color::BLACK.into()),
+        "color2".into() => Property::color(IsUniform::Yes, color::WHITE.into()),
+        "iTime".into() => Property::time(IsUniform::Yes, None)
+    }, 
+    SIMPLE_VS.into(),
+    STROBE_FS.into()
+    // Calling `register` will send this data to the AFRAME.registerShader function.
+).register("strobe")?;
+```
+
+## Low-level API
+
+TODO
+
 ## Sys API
 
 The lowest-level calls to Aframe are defined in the `sys` module:
@@ -346,3 +380,331 @@ extern
 ```
 
 Using this should not be necessary for the usage of this crate, but the public APIs have been provided while this crate is still feature-incomplete.
+
+## yew_support feature
+
+The `yew_support` feature adds yew support to this crate. At its core, all this does is implement `From<&Scene> for Html`. This allows you to write a yew component as such:
+
+```rust
+static INIT: AtomicBool = AtomicBool::new(false);
+
+#[derive(Clone, PartialEq, Properties)]
+pub struct AframeProps
+{
+    scene: aframe::Scene
+}
+
+pub struct Aframe
+{
+    props: AframeProps
+}
+
+impl crate::utils::Component for Aframe 
+{
+    type Message = Msg;
+    type Properties = AframeProps;
+
+    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self 
+    {
+        // Register aframe stuff first time only
+        if !INIT.load(Ordering::Relaxed)
+        {
+            unsafe 
+            {
+                // Code in this block registers shaders, components, and primitives with aframe
+                shaders::register_shaders(); 
+                component::register_components();
+                primitive::register_primitives();
+            }
+            INIT.store(true, Ordering::Relaxed)
+        }
+        Self 
+        { 
+            props
+        }
+    }
+
+    fn update(&mut self, _: Self::Message) -> ShouldRender 
+    {
+        true
+    }
+
+    fn change(&mut self, _props: Self::Properties) -> ShouldRender 
+    {
+        false
+    }
+
+    fn view(&self) -> Html 
+    {
+        (&self.props.scene).into()
+    }
+}
+```
+
+Below is a full definition of how the scene is defined in yew:
+
+```rust
+html!
+{
+    <Aframe scene = 
+    { 
+        const CURSOR_COLOR: [(Cow<'static, str>, Cow<'static, str>); 1] = 
+            [(Cow::Borrowed("color"), Cow::Borrowed("lightblue"))];
+        scene!
+        {
+            // TODO: Some of these attributes are actually components
+            attributes: ("inspector", "true"), ("embedded", "true"), ("cursor", "rayOrigin: mouse"),
+                        ("mixin", "intersect_ray"), ("crawling-cursor", "target: #mouse-cursor"), 
+                        ("style", "min-height: 50px;"),
+            assets: assets!
+            {
+                Image::new("ramen", "/pics/ramen.png"),
+                Image::new("noise", "/pics/noise.bmp"),
+                Audio::new("ambient_music", "/audio/Ephemeral/Coin Machine.mp3"),
+                mixin!
+                {
+                    "intersect_ray", 
+                    ("raycaster", component!
+                    {
+                        RayCaster,
+                        objects: List(Cow::Borrowed(&[Cow::Borrowed("#ramen-cube, #water")]))
+                    })
+                }
+            },
+            children: 
+            // The mouse cursor
+            entity!
+            {
+                // TODO: Make a constant for the fps & text components
+                attributes: ("id", "mouse-cursor"), ("vr-mode-watcher", "true"), 
+                            ("restrict-entity", "states: non-vr"),
+                components: ("geometry", component!
+                {
+                    component::Geometry,
+                    primitive: component::GeometryPrimitive::Ring
+                    {
+                        radius_inner: 0.06,
+                        radius_outer: 0.2,
+                        segments_theta: 32,
+                        segments_phi: 8,
+                        theta_start: 0.0,
+                        theta_length: 360.0
+                    }
+                }),
+                ("material", component!
+                {
+                    component::Material,
+                    props: component::MaterialProps(Cow::Borrowed(&CURSOR_COLOR)),
+                    opacity: 0.8
+                })
+            },
+            // The camera rig
+            entity!
+            {
+                attributes: ("id", "rig") /*, ("movement-controls", "true")*/,
+                components: 
+                ("position", component::Position { x: 0.0, y: 0.0, z: 0.0  }),
+                ("geometry", component!
+                {
+                    component::Geometry,
+                    primitive: component::GeometryPrimitive::Ring
+                    {
+                        radius_inner: 0.06,
+                        radius_outer: 0.2,
+                        segments_theta: 32,
+                        segments_phi: 8,
+                        theta_start: 0.0,
+                        theta_length: 360.0
+                    }
+                }),
+                ("material", component!
+                {
+                    component::Material,
+                    props: component::MaterialProps(Cow::Borrowed(&CURSOR_COLOR)),
+                    opacity: 0.8
+                }),
+                children: 
+                    // The camera
+                    entity!
+                    {
+                        attributes: ("id", "camera"), 
+                        components: 
+                            ("position", component::Position { x: 0.0, y: 1.8, z: 0.0  }),
+                            ("camera", component!(component::Camera)),
+                            ("look-controls", component!(component::LookControls))
+                    }, 
+                    
+                    // FPS display
+                    entity!
+                    {
+                        // TODO: Make a constant for the fps & text components
+                        attributes: ("id", "fps-display"), ("text", "color: green; value: Text"),
+                        components: 
+                            ("position", component::Position { x: 0.0, y: 1.5, z: -1.0  }),
+                            ("fps", component!(component::Fps))
+                    }, 
+                    
+                    // Hands
+                    entity!
+                    {
+                        // TODO: Some fancier way to add/build mixins
+                        // TODO: Make a constant for all these components
+                        attributes: ("id", "left-controller"), ("mixin", "intersect_ray"), ("vr-mode-watcher", "true"),
+                                    ("restrict-entity", "states: vr"), ("laser-controls", "hand: left"), 
+                                    ("crawling-cursor", "target: #vr-cursor"), ("line", "color: red; opacity: 0.75")
+                    }, 
+                    entity!
+                    {
+                        // TODO: Some fancier way to add/build mixins
+                        // TODO: Make a constant for all these components
+                        attributes: ("id", "right-controller"), ("mixin", "intersect_ray"), ("vr-mode-watcher", "true"),
+                                    ("restrict-entity", "states: vr"), ("laser-controls", "hand: right"), 
+                                    ("crawling-cursor", "target: #vr-cursor"), ("line", "color: red; opacity: 0.75")
+                    }, 
+    
+                    // The vr cursor
+                    entity!
+                    {
+                        // TODO: Make a constant for vr-mode-watcher & restrict-entity
+                        attributes: ("id", "vr-cursor"), ("vr-mode-watcher", "true"), ("restrict-entity", "states: vr"),
+                        components: ("geometry", component!
+                        {
+                            component::Geometry,
+                            primitive: component::GeometryPrimitive::Ring
+                            {
+                                radius_inner: 0.06,
+                                radius_outer: 0.2,
+                                segments_theta: 32,
+                                segments_phi: 8,
+                                theta_start: 0.0,
+                                theta_length: 360.0
+                            }
+                        }),
+                        ("material", component!
+                        {
+                            component::Material,
+                            props: component::MaterialProps(Cow::Borrowed(&CURSOR_COLOR)),
+                            opacity: 0.7
+                        })
+                    }
+            },
+            entity!
+            {
+                attributes: ("id", "cube-rig"),
+                components: 
+                ("position", component::Position{x: 0.0, y: 2.5, z: -2.0}),
+                ("sound", component!
+                {
+                    component::Sound,
+                    src: Cow::Borrowed("#ambient_music"), 
+                    volume: 0.5
+                }),
+                ("play-sound-on-event", component!
+                {
+                    component::PlaySoundOnEvent,
+                    mode: component::PlaySoundOnEventMode::ToggleStop, 
+                    event: Cow::Borrowed("click")
+                }),
+                ("light", component!
+                {
+                    component::Light,
+                    light_type: component::LightType::Point
+                    {
+                        decay: 1.0,
+                        distance: 50.0,
+                        shadow: component::OptionalLocalShadow::NoCast{},
+                    }, 
+                    intensity: 0.0
+                }),
+                ("animation__mouseenter", component!
+                {
+                    component::Animation,
+                    property: Cow::Borrowed("light.intensity"),
+                    to: Cow::Borrowed("1.0"),
+                    start_events: component::List(Cow::Borrowed(&[Cow::Borrowed("mouseenter")])),
+                    dur: 250
+                }),
+                ("animation__mouseleave", component!
+                {
+                    component::Animation,
+                    property: Cow::Borrowed("light.intensity"),
+                    to: Cow::Borrowed("0.0"),
+                    start_events: component::List(Cow::Borrowed(&[Cow::Borrowed("mouseleave")])),
+                    dur: 250
+                }),
+                children: entity!
+                {
+                    primitive: "ramen-cube",
+                    attributes: ("id", "ramen-cube"),
+                    components: // None
+                }
+            },
+    
+            // Ambient light
+            entity!
+            {
+                attributes: ("id", "ambient-light"),
+                components: ("light", component!
+                {
+                    component::Light,
+                    light_type: component::LightType::Ambient{},
+                    color: color::GREY73,
+                    intensity: 0.2
+                })
+            },
+    
+            // Directional light
+            entity!
+            {
+                attributes: ("id", "directional-light"),
+                components: 
+                ("position", component::Position{ x: 0.5, y: 1.0, z: 1.0 }),
+                ("light", component!
+                {
+                    component::Light,
+                    light_type: component::LightType::Directional
+                    {
+                        shadow: component::OptionalDirectionalShadow::Cast
+                        {
+                            shadow: component!
+                            {
+                                component::DirectionalShadow
+                            }
+                        }
+                    },
+                    color: color::WHITE,
+                    intensity: 0.1
+                })
+            },
+            // The sky
+            entity!
+            {
+                primitive: "a-sky",
+                attributes: ("id", "sky"),
+                components: ("material", component!
+                {
+                    component::Material, 
+                    shader: Cow::Borrowed("strobe"),
+                    props: component::MaterialProps(Cow::Owned(vec!
+                    (
+                        (Cow::Borrowed("color"), Cow::Borrowed("black")),
+                        (Cow::Borrowed("color2"), Cow::Borrowed("#222222"))
+                    )))
+                })
+            },
+            // The ocean
+            entity!
+            {
+                primitive: "a-ocean",
+                attributes: ("id", "water"), ("depth", "100"), ("width", "100"), ("amplitude", "0.5"),
+                components: ("material", component!
+                {
+                    component::Material, 
+                    shader: Cow::Borrowed("water"),
+                    props: component::MaterialProps(Cow::Owned(vec!((Cow::Borrowed("transparent"), Cow::Borrowed("true")))))
+                })
+            }
+        }
+    } />
+}
+```
