@@ -2,6 +2,16 @@
 
 This is an [Aframe](https://aframe.io/) library for rust. It's still fairly experimental and a lot might change. I started writing this for a bit of fun to see if I could play with aframe from inside a [yew](https://yew.rs/) app. It started getting pretty large so I decided to abstract away all the yew-specific stuff and start making a library on its own. There's still a bunch missing and a bunch to do here, but what IS there is functional.
 
+# Setup
+
+Currently, this crate doesn't contain any features to initialize Aframe itself, so in your HTML header you ought to include:
+
+```html
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+```
+
+Beyond that, you can either use this crate's `Htmlify` trait to output raw html, or use the `yew-support` feature to create a yew componment (descirbed lower in this readme) to output your actual Aframe scene.
+
 # API
 
 ## Scene
