@@ -10,7 +10,7 @@ Currently, this crate doesn't contain any features to initialize Aframe itself, 
 <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 ```
 
-Beyond that, you can either use this crate's `Htmlify` trait to output raw html, or use the `yew-support` feature to create a yew componment (descirbed lower in this readme) to output your actual Aframe scene.
+Beyond that, you can either use this crate's `Htmlify` trait to output raw html, or use the `yew-support` feature to create a yew componment (described lower in this readme) to output your actual Aframe scene.
 
 # API
 
