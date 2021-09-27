@@ -70,7 +70,7 @@ The lowest-level calls to Aframe are defined in the `sys` module:
 
 The `yew_support` feature adds yew support to this crate. At its core, all this does is implement `From<&Scene> for Html`. This allows you to write a yew component as such:
 
-```ignore
+```rust,ignore
 static INIT: AtomicBool = AtomicBool::new(false);
 
 #[derive(Clone, PartialEq, Properties)]
@@ -130,7 +130,7 @@ impl crate::utils::Component for Aframe
 
 Below is a full example of how a scene is constructed in yew (this also serves of a valid example of how to use the `scene!` macro even outside of a yew context):
 
-```ignore
+```rust,ignore
 html!
 {
     <Aframe scene = 
