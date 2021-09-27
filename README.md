@@ -126,7 +126,9 @@ impl crate::utils::Component for Aframe
 }
 ```
 
-Below is a full definition of how the scene is defined in yew (this also serves of a valid example of how to use the `scene!` macro even outside of a yew context):
+# Example
+
+Below is a full example of how a scene is constructed in yew (this also serves of a valid example of how to use the `scene!` macro even outside of a yew context):
 
 ```ignore
 html!
