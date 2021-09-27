@@ -1,6 +1,7 @@
 use std::borrow::Cow;
 use crate::{ComponentVec, Assets, Attribute, component::Component, entity::*};
 
+/// Provided to define a `Scene` struct. See the top-level documentation for an example use.
 #[macro_export]
 macro_rules! scene
 {
@@ -22,7 +23,7 @@ macro_rules! scene
             {
                 $($(($cmp_id, $cmp_value)),*)?
             },
-            $crate::children_vec!
+            vec!
             {
                 $($($child),*)?
             }

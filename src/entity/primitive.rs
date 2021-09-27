@@ -4,7 +4,45 @@ use std::collections::HashMap;
 use super::*;
 use serde::Serialize;
 
-/// Macro to create a new primitive
+/// Top-level macro to define a new primitive.
+/// ```ignore
+/// let prim = primitive!
+/// {
+///     components: 
+///     ("position", component::Position{ x: 0.0, y: -2.0, z: -1.0 }),
+///     ("rotation", component::Rotation { x: 0.0, y: 45.0, z: 0.0  }),
+///     ("geometry", component!(component::Geometry)),
+///     ("animation__click", component!
+///     { 
+///         component::Animation,
+///         property: Cow::Borrowed("rotation"),
+///         from: Cow::Borrowed("0 45 0"),
+///         to: Cow::Borrowed("0 405 0"),
+///         start_events: component::List(Cow::Borrowed(&[Cow::Borrowed("click")])),
+///         dur: 900,
+///         easing: component::Easing::EaseOutCubic
+///     }),
+///     ("shadow", component!(component::Shadow)),
+///     ("material", component!
+///     {
+///         component::Material, 
+///         props: component::MaterialProps(Cow::Owned(vec!((Cow::Borrowed("src"), Cow::Borrowed("#ramen")))))
+///     })
+///     mappings: 
+///     ("src", "material.src"), 
+///     ("depth", "geometry.depth"), 
+///     ("height", "geometry.height"), 
+///     ("width", "geometry.width")
+/// };
+/// unsafe
+/// {
+///     match prim.register("ramen-cube")
+///     {
+///         Ok(_) => (),
+///         Err(err) => yew::services::ConsoleService::log(&format!("{:?}", err))
+///     }
+/// }
+/// ```
 #[macro_export]
 macro_rules! primitive
 {
@@ -24,7 +62,7 @@ macro_rules! primitive
     }
 }
 
-/// Contains primitive definition which may be registered to aframe
+/// Contains primitive definition which may be registered to Aframe
 #[derive(Serialize, Clone)]
 pub struct PrimitiveReg
 {

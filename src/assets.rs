@@ -1,6 +1,25 @@
 use std::borrow::Cow;
 use crate::{Attribute, Component, ComponentVec, simple_enum};
 
+/// Constructs an Assets object for use in a scene.
+/// Example:
+/// ```ignore
+// assets!
+/// {
+///     Image::new("ramen", "/pics/ramen.png"),
+///     Image::new("noise", "/pics/noise.bmp"),
+///     Audio::new("ambient_music", "/audio/Ephemeral/Coin Machine.mp3"),
+///     mixin!
+///     {
+///         "intersect_ray", 
+///         ("raycaster", component!
+///         {
+///             RayCaster,
+///             objects: List(Cow::Borrowed(&[Cow::Borrowed("#ramen-cube, #water")]))
+///         })
+///     }
+/// },
+/// ```
 #[macro_export]
 macro_rules! assets
 {
@@ -14,6 +33,8 @@ macro_rules! assets
     }
 }
 
+/// Constructs an `AssetItem::Mixin` foir use in an `Assets` struct. 
+/// See the [assets!](assets) macro for an example/
 #[macro_export]
 macro_rules! mixin
 {

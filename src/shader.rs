@@ -4,7 +4,32 @@ use std::{borrow::Cow, collections::HashMap};
 use serde::{Serialize, Serializer};
 use wasm_bindgen::prelude::*;
 
-/// Allows shaders to be passed to Aframe
+/// Provides all the tools necessary to define an Aframe shader. 
+/// The [maplit](https://docs.rs/maplit/1.0.2/maplit/) crate is recommended 
+/// for simplifying shader definitions. See below:
+/// ```ignore
+/// use maplit::*;
+/// use aframe::shader::*;
+///
+/// pub const SIMPLE_VS: &str = include_str!("./SOME_PATH/glsl/simple.vs");
+/// pub const STROBE_FS: &str = include_str!("./SOME_PATH/glsl/strobe.fs");
+///
+/// Shader::new
+/// (
+///     hashmap!
+///     {
+///         "speedMult".into() => Property::number(IsUniform::Yes, 1.0.into()),
+///         "alpha".into() => Property::number(IsUniform::Yes, 1.0.into()),
+///         "alpha2".into() => Property::number(IsUniform::Yes, 1.0.into()),
+///         "color".into() => Property::color(IsUniform::Yes, color::BLACK.into()),
+///         "color2".into() => Property::color(IsUniform::Yes, color::WHITE.into()),
+///         "iTime".into() => Property::time(IsUniform::Yes, None)
+///     }, 
+///     SIMPLE_VS.into(),
+///     STROBE_FS.into()
+///     // Calling `register` will send this data to the AFRAME.registerShader function.
+/// ).register("strobe")?;
+/// ```
 #[derive(Serialize)]
 pub struct Shader<'a, 'b, 'c>
 {

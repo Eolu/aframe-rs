@@ -28,9 +28,16 @@ use js_sys::{Object, Reflect};
 /// | play | JsValue created from a js_sys::Function() | Called when the entity or scene resumes |
 /// | update_schema | JsValue created from a js_sys::Function(data) | if defined, is called on every update in order to check if the schema needs to be dynamically modified |
 ///
+/// All parameteres are optional, although the order must be exactly as shown. 
+/// `dependencies` should be a comma-separated list of strings followed by a 
+/// semicolon. `schema` should be a HashMap with string keys and `Property` 
+/// values. `multiple` is a boolean value. The rest are strings containing 
+/// javascript code. A `js!` macro is provided to allow inline javascript code 
+/// to be included in the Rust code (See the docs for the `js!` macro for 
+/// caveats and limitations). Here's an example:
 /// ```ignore
 /// // Example: 
-/// component_def!
+/// let some_component = component_def!
 /// (
 ///     dependencies: "dependency1", "dependency2", some_string,
 ///     schema: hashmap!
@@ -63,6 +70,10 @@ use js_sys::{Object, Reflect};
 ///     pause: js!(this.data.autoplay = false;),
 ///     play: js!(this.data.autoplay = true;),
 /// );
+/// unsafe
+/// {
+///     some_component.register("component_name");
+/// }
 /// ```
 #[macro_export]
 macro_rules! component_def
@@ -174,6 +185,7 @@ impl ComponentReg
     }
 }
 
+/// A property for a ComponentReg
 #[derive(Serialize, Clone)]
 pub struct Property
 {

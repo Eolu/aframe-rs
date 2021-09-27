@@ -3,6 +3,72 @@ pub mod primitive;
 use std::borrow::Cow;
 use crate::{Attribute, ComponentVec, Htmlify, component::Component};
 
+/// Defines the high-level API for describing entities, with one form for 
+/// describing general entities and another for defining specific primitives.
+
+/// Here's an example of a general entity definition:
+/// ```ignore
+/// entity!
+/// {
+///     attributes: ("id", "cube-rig"),
+///     components: 
+///     ("position", component::Position{x: 0.0, y: 2.5, z: -2.0}),
+///     ("sound", component!
+///     {
+///         component::Sound,
+///         src: Cow::Borrowed("#ambient_music"), 
+///         volume: 0.5
+///     }),
+///     ("play-sound-on-event", component!
+///     {
+///         component::PlaySoundOnEvent,
+///         mode: component::PlaySoundOnEventMode::ToggleStop, 
+///         event: Cow::Borrowed("click")
+///     }),
+///     ("light", component!
+///     {
+///         component::Light,
+///         light_type: component::LightType::Point
+///         {
+///             decay: 1.0,
+///             distance: 50.0,
+///             shadow: component::OptionalLocalShadow::NoCast{},
+///         }, 
+///         intensity: 0.0
+///     }),
+///     ("animation__mouseenter", component!
+///     {
+///         component::Animation,
+///         property: Cow::Borrowed("light.intensity"),
+///         to: Cow::Borrowed("1.0"),
+///         start_events: component::List(Cow::Borrowed(&[Cow::Borrowed("mouseenter")])),
+///         dur: 250
+///     }),
+///     ("animation__mouseleave", component!
+///     {
+///         component::Animation,
+///         property: Cow::Borrowed("light.intensity"),
+///         to: Cow::Borrowed("0.0"),
+///         start_events: component::List(Cow::Borrowed(&[Cow::Borrowed("mouseleave")])),
+///         dur: 250
+///     }),
+///     children: entity!
+///     {
+///         primitive: "ramen-cube",
+///         attributes: ("id", "ramen-cube"),
+///         components:
+///     }
+/// },
+/// ```
+/// and here's an example of a primitive definition:
+/// ```ignore
+/// entity!
+/// {
+///     primitive: "ramen-cube",
+///     attributes: ("id", "ramen-cube"),
+///     components: 
+/// }
+/// ```
 #[macro_export]
 macro_rules! entity
 {
@@ -22,7 +88,7 @@ macro_rules! entity
             {
                 $($(($cmp_id, $cmp_value)),*)?
             },
-            children_vec!
+            vec!
             {
                 $($($child),*)?
             }
@@ -46,7 +112,7 @@ macro_rules! entity
             {
                 $($(($cmp_id, $cmp_value)),*)?
             },
-            children_vec!
+            vec!
             {
                 $($($child),*)?
             }
@@ -54,6 +120,7 @@ macro_rules! entity
     }
 }
 
+/// Mid-level macro to create a vector of attributes
 #[macro_export]
 macro_rules! attributes_vec
 {
@@ -65,6 +132,7 @@ macro_rules! attributes_vec
     }
 }
 
+/// Mid-level macro to create a vector of components
 #[macro_export]
 macro_rules! components_vec
 {
@@ -76,17 +144,7 @@ macro_rules! components_vec
     }
 }
 
-#[macro_export]
-macro_rules! children_vec
-{
-    ( 
-        $($child:expr),*
-    ) => 
-    {
-        vec![ $($child),* ]
-    }
-}
-
+/// Struct which represents an Aframe entity or primitive
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Entity
 {

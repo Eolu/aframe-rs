@@ -30,6 +30,7 @@ impl Clone for Box<dyn Component>
     }
 }
 
+/// A vector containing a tuple of components along with their property name
 #[derive(Default, Debug)]
 #[repr(transparent)]
 pub struct ComponentVec(pub Vec<(Cow<'static, str>, Box<dyn Component>)>);
@@ -70,10 +71,17 @@ impl Clone for ComponentVec
     }
 }
 
-/// A macro to define a component struct. The component must be already registered 
-/// in aframe before this struct may be used (although constructing it before that
-/// is safe). There are 2 variation of syntax provided, depending on the desired 
-/// resulting `Display` implementation.
+/// While `component_def!` creates a component that Aframe can access from its 
+/// own runtime, the `component_struct!` macro creates a Rust struct that mimics
+/// the internal details of that Aframe component. Component structs are already
+/// provided for Aframe's built-in components (WIP: not all components are defined
+/// yet. Once all aframe components are defined, calling `component_struct!` 
+/// should only be necessary for locally-defined components. Once all components
+/// from Aframe have been defined, `component_def!` and `component_struct!` may
+/// be merged into a single macro to do the heavy-lifting of both at once). The
+/// component must be already registered in aframe before this struct may be used 
+/// (although constructing it before that is safe). There are 2 variation of 
+/// syntax provided, depending on the desired resulting `Display` implementation.
 /// 
 /// ```ignore
 /// use aframe::component_struct;
@@ -102,12 +110,13 @@ impl Clone for ComponentVec
 #[macro_export]
 macro_rules! component_struct
 {
-    ($name:ident $(, $field:ident: $field_name:literal $ty:ty = $default:expr)*) => 
+    ($(#[$outer:meta])* $name:ident $(, $field:ident: $field_name:literal $ty:ty = $default:expr)*) => 
     {
-        component_struct!($name concat!($($field_name, ": {};"),*) $(, $field: $field_name $ty = $default)*);
+        component_struct!($(#[$outer])* $name concat!($($field_name, ": {};"),*) $(, $field: $field_name $ty = $default)*);
     };
-    ($name:ident $(:$alt:ident)? $fmt:expr $(, $field:ident: $field_name:literal $ty:ty = $default:expr)*) => 
+    ($(#[$outer:meta])* $name:ident $(:$alt:ident)? $fmt:expr $(, $field:ident: $field_name:literal $ty:ty = $default:expr)*) => 
     {
+        $(#[$outer])*
         #[derive(Debug, Clone, PartialEq, serde::Serialize)]
         pub struct $name
         {
@@ -196,7 +205,11 @@ macro_rules! component_struct
 /// A macro to instantiate a component. Mimics struct creation syntax, but allows
 /// any number of fields to be left out (in which case defaults will be used). 
 /// Note that the ability to leave out fields does not extend to struct_like
-/// enum variants created in this macro.
+/// enum variants created in this macro. For example: `component!{component::Camera}` 
+/// will create a `camera` component with all its fields set to default values, 
+/// whereas `component!{component::Camera, active = false}` will create a 
+/// `camera` component with all its fields set to default values except the 
+/// `active` field.
 /// ```ignore
 /// // For example:
 /// use aframe::component;
@@ -224,17 +237,24 @@ macro_rules! component
     }
 }
 
-/// A macro to define a simple enum which implements Display.
+/// Defines an enum in which each variant maps to a single string (via a 
+/// `Display` implementation). This can be combined with `component_def!` 
+/// to crate fields with a limited number of possiblities.
 /// ```ignore
 /// // For example:
 /// use aframe::simple_enum;
 /// 
 /// simple_enum!
-/// (
-///     Axis, 
-///     X => "x", 
-///     Y => "y", 
-///     Z => "z"
+/// (Autoplay, 
+///     Null => "null", 
+///     True => "true", 
+///     False => "false"
+/// );
+/// component_struct!
+/// (Animation,
+///     // ...
+///     autoplay: "autoplay" Autoplay = Autoplay::Null,
+///     // ...
 /// );
 /// ```
 #[macro_export]
@@ -254,32 +274,64 @@ macro_rules! simple_enum
     }
 }
 
-/// A macro to define an enum in which each field is struct-like. Works similarly
-/// to the `component_struct!` macro.
+/// A macro to define an enum in which each variant maps to an arbitrary number 
+/// of fields which will themselves be flattened into fields of the component 
+/// itself. Works similarly to the `component_struct!` macro.
 /// ```ignore
 /// // For example:
 /// use aframe::complex_enum;
 /// 
-/// complex_enum!{LightType, 
-///     Ambient "type: ambient; " => {},
-///     Directional "type: directional; {}" => { shadow: Shadow },
-///     Hemisphere "type: hemisphere; groundColor: {}" => { ground_color: color::Color  },
-///     Point "type: point; decay: {}; distance: {}; {}" => 
-///     { 
-///         decay: f32, 
-///         distance: f32,
-///         shadow: Shadow
+/// complex_enum!
+/// (AnimationLoop, 
+///     Amount "{}" => { looping: u32 },
+///     Forever "true" => {}
+/// );
+/// component_struct!
+/// (Animation,
+///     // ...
+///     looping: "loop" AnimationLoop = AnimationLoop::Amount{looping: 0},
+///     // ...
+/// );
+/// 
+/// // Another example is as follows:
+/// 
+/// complex_enum!
+/// (GeometryPrimitive, 
+///     Box
+///     "primitive: box; width: {}; height: {}; depth: {}; segmentsWidth: {}; \
+///     segmentsHeight: {}; segmentsDepth: {}" => 
+///     {  
+///         width: f32,
+///         height: f32,
+///         depth: f32,
+///         segments_width: u32,
+///         segments_height: u32,
+///         segments_depth: u32
 ///     },
-///     Spot "type: spot; angle: {}; decay: {}; distance: {}; penumbra: {}; target: {}; {}" =>
+///     Circle
+///     "primitive: circle; radius: {}; segments: {}; \
+///     thetaStart: {}; thetaLength: {}" =>
 ///     {
-///         angle: i32,
-///         decay: f32,
-///         distance: f32,
-///         penumbra: f32,
-///         target: Cow<'static, str>,
-///         shadow: Shadow
-///     }
-/// }
+///         radius: f32,
+///         segments: u32,
+///         theta_start: f32,
+///         theta_length: f32
+///     },
+///     // ...
+/// );
+/// component_struct!
+/// (Geometry,
+///     primitive: "" GeometryPrimitive = GeometryPrimitive::Box
+///     {
+///         width: 1.0,
+///         height: 1.0,
+///         depth: 1.0,
+///         segments_width: 1,
+///         segments_height: 1,
+///         segments_depth: 1,
+///     },
+///     // ...
+/// );
 /// ```
 #[macro_export]
 macro_rules! complex_enum

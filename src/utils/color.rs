@@ -8,6 +8,7 @@ macro_rules! def_color
 {
     ($name:ident $($field:ident)*) => 
     {
+        /// A representation of a color
         #[derive(Debug, Clone, Copy, PartialEq, serde::Serialize)]
         pub struct $name
         {

@@ -1,3 +1,35 @@
+//! ## High-level API
+//! [component_def!](`component_def`)    
+//! [component_struct!](`component_struct`)    
+//! [component!](`component`)    
+//! [simple_enum!](`simple_enum`)    
+//! [complex_enum!](`complex_enum`)    
+//!
+//! ## Low-level API
+//! A `component_struct` is simply a type that implements these 2 traits:
+//!
+//! ```ignore
+//! pub trait Component: Display + std::fmt::Debug + std::any::Any
+//! {
+//!     fn clone(&self) -> Box<dyn Component>;
+//!     fn eq(&self, other: &'static dyn Component) -> bool;
+//!     fn as_map(&self) -> HashMap<Cow<'static, str>, Cow<'static, str>>;
+//! }
+//!
+//! pub trait ConstDefault
+//! {
+//!     const DEFAULT: Self;
+//! }
+//! ```
+//!
+//! As long as `clone` provides a valid clone, `eq` provides a valid equality 
+//! check, and `as_map` provides a serialization of keys to values that Aframe 
+//! can understand, and a `DEFAULT` value is provided that can be evaluated at 
+//! compile time, a struct is a valid component. 
+//! 
+//! A `ComponentReg` is slightly more complicated, but details on its low-level
+//! API may be added here at a later date.
+
 mod register;
 mod instance;
 
@@ -10,10 +42,20 @@ use crate::component_struct;
 use crate::simple_enum;
 use crate::complex_enum;
 
-component_struct!(Position :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0);
-component_struct!(Rotation :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0);
 component_struct!
-(Sound, 
+(
+    /// [position](https://aframe.io/docs/1.2.0/components/position.html)
+    Position :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0
+);
+component_struct!
+(
+    /// [rotation](https://aframe.io/docs/1.2.0/components/rotation.html)
+    Rotation :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0
+);
+component_struct!
+(
+    /// [sound](https://aframe.io/docs/1.2.0/components/sound.html)
+    Sound, 
     src: "src" Cow<'static, str> = Cow::Borrowed(""),
     autoplay: "autoplay" bool = false,
     positional: "positional" bool = true,
@@ -21,7 +63,9 @@ component_struct!
     looping: "loop" bool = false
 );
 component_struct!
-(Light, 
+(
+    /// [light](https://aframe.io/docs/1.2.0/components/light.html)
+    Light, 
     light_type: "" LightType = LightType::Directional { shadow: OptionalDirectionalShadow::NoCast{} },
     color: "color" color::Rgb = color::WHITE,
     intensity: "intensity" f32 = 1.0
@@ -48,7 +92,9 @@ complex_enum!
     }
 );
 component_struct!
-(LocalShadow, 
+(
+    /// [light#shadow](https://aframe.io/docs/1.2.0/components/light.html#configuring-shadows)
+    LocalShadow, 
     shadow_bias: "shadowBias" f64 = 0.0,
     shadow_camera_far: "shadowCameraFar" f32 = 500.0,
     shadow_camera_near: "shadowCameraNear" f32 = 0.5,
@@ -58,7 +104,9 @@ component_struct!
     shadow_camera_fov: "shadowCameraFov" f32 = 50.0
 );
 component_struct!
-(DirectionalShadow, 
+(
+    /// [light#shadow](https://aframe.io/docs/1.2.0/components/light.html#configuring-shadows)
+    DirectionalShadow, 
     shadow_bias: "shadowBias" f64 = 0.0,
     shadow_camera_far: "shadowCameraFar" f32 = 500.0,
     shadow_camera_near: "shadowCameraNear" f32 = 0.5,
@@ -82,7 +130,9 @@ complex_enum!
 );
 
 component_struct!
-(Animation,
+(
+    /// [animation](https://aframe.io/docs/1.2.0/components/animation.html)
+    Animation,
     property: "property" Cow<'static, str> = Cow::Borrowed(""),
     is_raw_property: "isRawProperty" bool = false,
     from: "from" Cow<'static, str> = Cow::Borrowed("null"),
@@ -150,6 +200,7 @@ simple_enum!
 );
 component_struct!
 {
+    /// [raycaster](https://aframe.io/docs/1.2.0/components/raycaster.html)
     RayCaster,
     auto_refresh: "autoRefresh" bool = true,
     direction: "direction" Vector3 = Vector3 { x: 0.0, y: 0.0, z: -1.0 },
@@ -172,6 +223,7 @@ complex_enum!
 }
 component_struct!
 {
+    /// [camera](https://aframe.io/docs/1.2.0/components/camera.html)
     Camera,
     active: "active" bool = true,
     far: "far" u32 = 10000,
@@ -182,6 +234,7 @@ component_struct!
 }
 component_struct!
 {
+    /// [look-controls](https://aframe.io/docs/1.2.0/components/look-controls.html)
     LookControls,
     enabled: "enabled" bool = true,
     hmd_enabled: "hmdEnabled" bool = true,
@@ -193,7 +246,9 @@ component_struct!
     magic_window_tracking_enabled: "magicWindowTrackingEnabled" bool = true
 }
 component_struct!
-(Geometry,
+(
+    /// [geometry](https://aframe.io/docs/1.2.0/components/geometry.html)
+    Geometry,
     primitive: "" GeometryPrimitive = GeometryPrimitive::Box
     {
         width: 1.0,
@@ -325,12 +380,16 @@ complex_enum!
     //Custom(CustomGeometry)
 );
 component_struct!
-(Shadow, 
+(
+    /// [shadow](https://aframe.io/docs/1.2.0/components/shadow.html)
+    Shadow, 
     cast: "cast" bool = true,
     receive: "receive" bool = true
 );
 component_struct!
-(Material, 
+(
+    /// [material](https://aframe.io/docs/1.2.0/components/material.html)
+    Material, 
     alpha_test: "alphaTest" f32 = 0.0,
     depth_test: "depthTest" bool = true,
     flat_shading: "flatShading" bool = false,
@@ -367,6 +426,9 @@ simple_enum!
     Subtractive => "subtractive", 
     Multiply => "multiply"
 );
+
+/// Additional properties for the Material component. Contains a slice or vector
+/// of property names to property values.
 #[derive(Debug, Clone, PartialEq, serde::Serialize)]
 #[repr(transparent)]
 pub struct MaterialProps(pub Cow<'static, [(Cow<'static, str>, Cow<'static, str>)]>);

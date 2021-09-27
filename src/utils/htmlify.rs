@@ -3,6 +3,34 @@ use std::{borrow::Cow, fmt::Display};
 use crate::{Asset, AssetItem, Assets, Audio, Entity, Image, Mixin, Scene, Video};
 
 /// Trait used to generate HTML from aframe objects.
+/// The `Htmlify` trait is defined for all components, entities, and scenes.
+/// 
+/// It contains the following required definition:
+/// ```ignore
+/// const TAG: &'static str;
+/// ```
+/// and the following optional defintions:
+/// ```ignore
+/// fn attributes(&self) -> Vec<Attribute>;
+/// fn inner_html(&self) -> Cow<'static, str>;
+/// ```
+/// as well as the following definiton which should not need to be implemented, but may on occasion be useful to be overridden:
+/// ```ignore
+/// fn as_raw_html(&self) -> String 
+/// {
+///     format!
+///     (
+///         "<{0} {2}> {1} </{0}>",
+///         Self::TAG,
+///         self.inner_html(),
+///         self.attributes()
+///             .iter()
+///             .map(Attribute::to_string)
+///             .collect::<Vec<String>>()
+///             .join(" ")
+///     )
+/// }
+/// ```
 pub trait Htmlify
 {
     const TAG: &'static str;
