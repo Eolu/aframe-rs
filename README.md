@@ -12,58 +12,58 @@ Currently, this crate doesn't contain any features to initialize Aframe itself, 
 
 Beyond that, you can either use this crate's `Htmlify` trait to output raw html, or use the `yew-support` feature to create a yew componment (described lower in this readme) to output your actual Aframe scene.
 
-# API
+# API    
 
-## Scene
-Instantiating a scene:
-[scene!](macro.scene.html)    
+## Scene    
+Instantiating a scene:    
+[scene!](https://docs.rs/aframe/*/aframe/macro.scene.html)    
 
-## Components
-Defining a new component:
-[component_def!](macro.component_def.html)   
+## Components    
+Defining a new component:    
+[component_def!](https://docs.rs/aframe/*/aframe/macro.component_def.html)    
 
-Declaring the structure of a defined component:
-[component_struct!](macro.component_struct.html)   
-[simple_enum!](macro.simple_enum.html)   
-[complex_enum!](macro.complex_enum.html)   
+Declaring the structure of a defined component:    
+[component_struct!](https://docs.rs/aframe/*/aframe/macro.component_struct.html)    
+[simple_enum!](https://docs.rs/aframe/*/aframe/macro.simple_enum.html)    
+[complex_enum!](https://docs.rs/aframe/*/aframe/macro.complex_enum.html)    
 
-Instantiating a component struct:
-[component!](macro.component.html)   
+Instantiating a component struct:    
+[component!](https://docs.rs/aframe/*/aframe/macro.component.html)    
  
-See the [component](component/index.html) module for more information and for 
+See the [component](https://docs.rs/aframe/*/aframe/component/) module for more information and for 
 pre-defined component constants.
 
-## Entities & Primitives
-Instantiating an entity or defined primitive
-[entity!](macro.entity.html)   
+## Entities & Primitives    
+Instantiating an entity or defined primitive:    
+[entity!](https://docs.rs/aframe/*/aframe/macro.entity.html)   
 
-Defining a new primitive:
-[primitive!](macro.primitive.html)   
+Defining a new primitive:    
+[primitive!](https://docs.rs/aframe/*/aframe/macro.primitive.html)   
 
-## Shaders
+## Shaders    
 
-[Shader](shader/struct.Shader.html)   
+[Shader](https://docs.rs/aframe/*/aframe/shader/struct.Shader.html)   
 
-## Htmlify
+## Htmlify    
 
-The `Htmlify` trait is is to generate raw HTML from the structures provided in this crate. This may eventually be abstracted into a separate crate. (TBD: Is there a better crate in existence already?)
+The `Htmlify` trait is is to generate raw HTML from the structures provided in this crate. This may eventually be abstracted into a separate crate. (TBD: Is there a better crate in existence already?)    
 
-[Htmlify](utils/htmlify/trait.Htmlify.html)    
+[Htmlify](https://docs.rs/aframe/*/aframe/utils/htmlify/trait.Htmlify.html)    
 
-## Assets
+## Assets    
 
-The `assets!` and `mixin!` macros are provided to define an `Assets` struct. Their signatures are as follows:
+The `assets!` and `mixin!` macros are provided to define an `Assets` struct. Their signatures are as follows:    
 
-[assets!](macro.assets.html)    
-[mixin!](macro.mixin.html)    
+[assets!](https://docs.rs/aframe/*/aframe/macro.assets.html)    
+[mixin!](https://docs.rs/aframe/*/aframe/macro.mixin.html)    
 
-## Sys API
+## Sys API    
 
-The lowest-level calls to Aframe are defined in the `sys` module:
+The lowest-level calls to Aframe are defined in the `sys` module:    
 
-[registerPrimitive](sys/fn.registerPrimitive.html)
-[registerComponent](sys/fn.registerComponent.html)
-[registerShader](sys/fn.registerShader.html)
+[registerPrimitive](https://docs.rs/aframe/*/aframe/sys/fn.registerPrimitive.html)    
+[registerComponent](https://docs.rs/aframe/*/aframe/sys/fn.registerComponent.html)    
+[registerShader](https://docs.rs/aframe/*/aframe/sys/fn.registerShader.html)    
 
 
 ## yew_support feature
