@@ -40,6 +40,13 @@ Instantiating an entity or defined primitive:
 Defining a new primitive:    
 [primitive!](https://docs.rs/aframe/*/aframe/macro.primitive.html)   
 
+## Assets    
+
+The `assets!` and `mixin!` macros are provided to define an `Assets` struct. Their signatures are as follows:    
+
+[assets!](https://docs.rs/aframe/*/aframe/macro.assets.html)    
+[mixin!](https://docs.rs/aframe/*/aframe/macro.mixin.html)    
+
 ## Shaders    
 
 [Shader](https://docs.rs/aframe/*/aframe/shader/struct.Shader.html)   
@@ -50,13 +57,6 @@ The `Htmlify` trait is is to generate raw HTML from the structures provided in t
 
 [Htmlify](https://docs.rs/aframe/*/aframe/utils/htmlify/trait.Htmlify.html)    
 
-## Assets    
-
-The `assets!` and `mixin!` macros are provided to define an `Assets` struct. Their signatures are as follows:    
-
-[assets!](https://docs.rs/aframe/*/aframe/macro.assets.html)    
-[mixin!](https://docs.rs/aframe/*/aframe/macro.mixin.html)    
-
 ## Sys API    
 
 The lowest-level calls to Aframe are defined in the `sys` module:    
@@ -64,7 +64,6 @@ The lowest-level calls to Aframe are defined in the `sys` module:
 [registerPrimitive](https://docs.rs/aframe/*/aframe/sys/fn.registerPrimitive.html)    
 [registerComponent](https://docs.rs/aframe/*/aframe/sys/fn.registerComponent.html)    
 [registerShader](https://docs.rs/aframe/*/aframe/sys/fn.registerShader.html)    
-
 
 ## yew_support feature
 

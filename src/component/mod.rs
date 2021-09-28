@@ -71,7 +71,9 @@ component_struct!
     intensity: "intensity" f32 = 1.0
 );
 complex_enum!
-(LightType, 
+(
+    /// [light-types](https://aframe.io/docs/1.2.0/components/light.html#light-types)
+    LightType, 
     Ambient "type: ambient; " => {},
     Directional "type: directional; {}" => { shadow: OptionalDirectionalShadow },
     Hemisphere "type: hemisphere; groundColor: {}" => { ground_color: color::Rgb  },
@@ -119,12 +121,16 @@ component_struct!
     shadow_camera_top: "shadowCameraTop" f32 = 5.0
 );
 complex_enum!
-(OptionalLocalShadow, 
+(
+    /// Shadow used for point and spot lights
+    OptionalLocalShadow, 
     Cast "castShadow: true; {}" => { shadow: LocalShadow },
     NoCast "castShadow: false;" => {}
 );
 complex_enum!
-(OptionalDirectionalShadow, 
+(
+    /// Shadow used for directional lights
+    OptionalDirectionalShadow, 
     Cast "castShadow: true; {}" => { shadow: DirectionalShadow },
     NoCast "castShadow: false;" => {}
 );
@@ -151,24 +157,32 @@ component_struct!
     enabled: "enabled" bool = true
 );
 complex_enum!
-(AnimationLoop, 
+(
+    /// [animation#loop](https://aframe.io/docs/1.2.0/components/animation.html#api_loop)
+    AnimationLoop, 
     Amount "{}" => { looping: u32 },
     Forever "true" => {}
 );
 simple_enum!
-(Autoplay, 
+(
+    /// [animation#autoplay](https://aframe.io/docs/1.2.0/components/animation.html#api_autoplay)
+    Autoplay, 
     Null => "null", 
     True => "true", 
     False => "false"
 );
 simple_enum!
-(AnimationDirection, 
+(
+    /// [animation#dir](https://aframe.io/docs/1.2.0/components/animation.html#api_dir)
+    AnimationDirection, 
     Normal => "normal", 
     Reverse => "reverse", 
     Alternate => "alternate"
 );
 simple_enum!
-(Easing, 
+(
+    /// [animation#easings](https://aframe.io/docs/1.2.0/components/animation.html#easings)
+    Easing, 
     EaseInQuad => "easeInQuad",
     EaseInCubic => "easeInCubic",
     EaseInQuart => "easeInQuart",
@@ -217,6 +231,7 @@ component_struct!
 }
 complex_enum! 
 {
+    /// [raycaster#far](https://aframe.io/docs/1.2.0/components/raycaster.html#properties_far)
     DistancePlane,
     Infinity "Infinity" => {},
     Distance "{}" => {distance: f32}
@@ -261,7 +276,9 @@ component_struct!
     skip_cache: "skipCache" bool = false
 );
 complex_enum!
-(GeometryPrimitive, 
+(
+    /// [geometry#built-in-geometries](https://aframe.io/docs/1.2.0/components/geometry.html#built-in-geometries)
+    GeometryPrimitive, 
     Box
     "primitive: box; width: {}; height: {}; depth: {}; segmentsWidth: {}; \
     segmentsHeight: {}; segmentsDepth: {}" => 
@@ -407,19 +424,25 @@ component_struct!
     props: "" MaterialProps = MaterialProps::DEFAULT
 );
 simple_enum!
-(MaterialSide, 
+(
+    /// [material#side](https://aframe.io/docs/1.2.0/components/material.html#properties_side)
+    MaterialSide, 
     Front => "front", 
     Back => "back", 
     Double => "double"
 );
 simple_enum!
-(VertexColors, 
+(
+    /// [material#vertexcolors](https://aframe.io/docs/1.2.0/components/material.html#properties_vertexcolors)
+    VertexColors, 
     None => "none", 
     Vertex => "vertex", 
     Face => "face"
 );
 simple_enum!
-(Blending, 
+(
+    /// [material#blending](https://aframe.io/docs/1.2.0/components/material.html#properties_blending)
+    Blending, 
     None => "none", 
     Normal => "normal", 
     Additive => "additive", 

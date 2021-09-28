@@ -110,7 +110,7 @@ macro_rules! component_def
     }
 }
 
-/// Component registration definition. 
+/// Component registration definition. All JsValues should be derived from [`js_sys::Function`]
 #[derive(Serialize, Clone)]
 pub struct ComponentReg
 {
@@ -185,7 +185,7 @@ impl ComponentReg
     }
 }
 
-/// A property for a ComponentReg
+/// A property for a ComponentReg, contains the type string and the default value.
 #[derive(Serialize, Clone)]
 pub struct Property
 {

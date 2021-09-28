@@ -87,7 +87,10 @@ impl Clone for ComponentVec
 /// use aframe::component_struct;
 /// 
 /// // Example 1, uses hard-coded display implementation:
-/// component_struct!{StructName, 
+/// component_struct!
+/// {
+///     /// Doc comment for StructName
+///     StructName, 
 ///     field_1: "field1Name" f32 = 1.5,
 ///     field_2: "field2Name" bool = false
 /// }
@@ -260,8 +263,9 @@ macro_rules! component
 #[macro_export]
 macro_rules! simple_enum
 {
-    ($name:ident $(, $variant:ident => $s:literal)*) => 
+    ($(#[$outer:meta])* $name:ident $(, $variant:ident => $s:literal)*) => 
     {
+        $(#[$outer])* 
         #[derive(Clone, Copy, PartialEq, Debug, serde::Serialize)]
         pub enum $name {$($variant),* }
         impl std::fmt::Display for $name
@@ -296,7 +300,9 @@ macro_rules! simple_enum
 /// // Another example is as follows:
 /// 
 /// complex_enum!
-/// (GeometryPrimitive, 
+/// (
+///     /// Doc comment for GeometryPrimitive enum
+///     GeometryPrimitive, 
 ///     Box
 ///     "primitive: box; width: {}; height: {}; depth: {}; segmentsWidth: {}; \
 ///     segmentsHeight: {}; segmentsDepth: {}" => 
@@ -320,7 +326,9 @@ macro_rules! simple_enum
 ///     // ...
 /// );
 /// component_struct!
-/// (Geometry,
+/// (
+///     /// This doc comment will be captured
+///     Geometry,
 ///     primitive: "" GeometryPrimitive = GeometryPrimitive::Box
 ///     {
 ///         width: 1.0,
@@ -336,8 +344,9 @@ macro_rules! simple_enum
 #[macro_export]
 macro_rules! complex_enum
 {
-    ($name:ident $(, $variant:ident $fmt:expr => { $($field:ident: $ty:ty),* })*) => 
+    ($(#[$outer:meta])* $name:ident $(, $variant:ident $fmt:expr => { $($field:ident: $ty:ty),* })*) => 
     {
+        $(#[$outer])* 
         #[derive(Debug, Clone, PartialEq, serde::Serialize)]
         pub enum $name 
         {

@@ -4,6 +4,7 @@ use std::borrow::Cow;
 
 use crate::utils::{Vector3, Vector4};
 
+/// Used to generate the Rgb and Rgba structs
 macro_rules! def_color
 {
     ($name:ident $($field:ident)*) => 

@@ -47,6 +47,7 @@ macro_rules! mixin
     }
 }
 
+/// A collection of assets for use in a scene
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Assets
 {
@@ -61,6 +62,7 @@ impl Assets
     }
 }
 
+/// An individual asset or mixin
 #[derive(Debug, Clone, PartialEq)]
 pub enum Asset
 {
@@ -99,6 +101,7 @@ impl From<&Asset> for Vec<Attribute>
     }
 }
 
+/// An untyped asset
 #[derive(Debug, Clone, PartialEq)]
 pub struct AssetItem
 {
@@ -119,6 +122,8 @@ impl AssetItem
         Asset::Item(Self { id: id.into(), src: src.into() })
     }
 }
+
+/// An image asset
 #[derive(Debug, Clone, PartialEq)]
 pub struct Image
 {
@@ -139,6 +144,8 @@ impl Image
         Asset::Image(Self { id: id.into(), src: src.into() })
     }
 }
+
+/// A video asset
 #[derive(Debug, Clone, PartialEq)]
 pub struct Video
 {
@@ -175,6 +182,8 @@ impl Video
         Asset::Video(Self { id: id.into(), src: src.into(), autoplay: false, preload })
     }
 }
+
+/// An audio asset
 #[derive(Debug, Clone, PartialEq)]
 pub struct Audio
 {
@@ -219,6 +228,8 @@ impl Audio
         Asset::Audio(Self { id: id.into(), src: src.into(), autoplay: false, preload })
     }
 }
+
+/// [mixins](https://aframe.io/docs/1.2.0/core/mixins.html)
 #[derive(Debug, Clone, PartialEq)]
 pub struct Mixin
 {
@@ -243,7 +254,9 @@ impl Mixin
 }
 
 simple_enum!
-(Preload, 
+(
+    /// Preload behavior for audio and video assets. Ignored if autoplay is set
+    Preload, 
     Auto => "auto", 
     Metadata => "metadata", 
     None => "none"

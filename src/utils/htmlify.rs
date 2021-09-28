@@ -58,7 +58,7 @@ pub trait Htmlify
     }
 }
 
-/// HTML Attribute wrapper
+/// HTML Attribute wrapper, a simple key-value string pair
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct Attribute
 {
