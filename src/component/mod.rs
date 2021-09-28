@@ -54,6 +54,11 @@ component_struct!
 );
 component_struct!
 (
+    /// [embedded](https://aframe.io/docs/1.2.0/components/embedded.html)
+    Embedded
+);
+component_struct!
+(
     /// [sound](https://aframe.io/docs/1.2.0/components/sound.html)
     Sound, 
     src: "src" Cow<'static, str> = Cow::Borrowed(""),

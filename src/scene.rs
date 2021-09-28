@@ -1,7 +1,27 @@
 use std::borrow::Cow;
 use crate::{ComponentVec, Assets, Attribute, component::Component, entity::*};
 
-/// Provided to define a `Scene` struct. See the top-level documentation for an example use.
+/// Provided to define a `Scene` struct.
+/// ```ignore
+/// let aframe_scene = scene!
+/// {
+///     attributes: ("style", "min-height: 50px;"),
+///
+///     assets: assets!
+///     {
+///         Image::new("image-name", "/my-image.png")
+///     }
+///
+///     components: ("embedded", component!(Embedded)),
+///
+///     children:
+///     entity!
+///     {
+///         attributes: ("id", "test-entity"),
+///         components: ("position", component!(component::Position)),
+///     }
+/// }
+/// ```
 #[macro_export]
 macro_rules! scene
 {

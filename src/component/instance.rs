@@ -177,6 +177,7 @@ macro_rules! component_struct
             }
             fn as_map(&self) -> std::collections::HashMap<Cow<'static, str>, Cow<'static, str>>
             {
+                #[allow(unused_mut)]
                 let mut map = std::collections::HashMap::new();
                 $( if $field_name.len() < 1
                 {

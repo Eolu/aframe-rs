@@ -61,6 +61,8 @@ impl<'a, 'b, 'c> Shader<'a, 'b, 'c>
     }
 }
 
+/// A property for a shader. This includes the shader type, whether or not this 
+/// property is a uniform, and an optional default value.
 #[derive(Serialize)]
 pub struct Property
 {
@@ -120,6 +122,7 @@ impl Property
     }
 }
 
+/// Wrapper for possible uniform default values
 pub enum DefaultVal
 {
     Str(Cow<'static, str>),
@@ -146,6 +149,7 @@ impl Serialize for DefaultVal
     }
 }
 
+/// Enum to make asking whether or not a property is a uniform more readable.
 pub enum IsUniform
 {
     Yes, No
