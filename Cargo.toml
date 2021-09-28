@@ -1,6 +1,6 @@
 [package]
 name = "aframe"
-version = "0.1.13"
+version = "0.1.14"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 authors = ["Griffin O'Neill <gsoneill1003@gmail.com>"]
@@ -12,7 +12,7 @@ keywords = ["vr", "aframe", "wasm", "web"]
 homepage = "https://github.com/Eolu/aframe-rs"
 repository = "https://github.com/Eolu/aframe-rs"
 categories = ["api-bindings", "wasm", "graphics", "multimedia"]
-documentation = "https://docs.rs/aframe-rs"
+documentation = "https://docs.rs/aframe"
 
 [lib]
 crate-type = ["rlib", "cdylib"]

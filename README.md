@@ -31,7 +31,7 @@ Instantiating a component struct:
 [component!](https://docs.rs/aframe/*/aframe/macro.component.html)    
  
 See the [component](https://docs.rs/aframe/*/aframe/component/) module for more information and for 
-pre-defined component constants.
+pre-defined component structs.
 
 ## Entities & Primitives    
 Instantiating an entity or defined primitive:    
