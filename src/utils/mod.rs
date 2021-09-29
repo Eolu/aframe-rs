@@ -41,6 +41,10 @@ pub struct Vector2
     pub x: f64,
     pub y: f64
 }
+impl ConstDefault for Vector2
+{
+    const DEFAULT: Vector2 = Vector2 { x: 0.0, y: 0.0 };
+}
 
 /// A 3-dimensional vector
 #[derive(Debug, Clone, Copy, PartialEq, Serialize)]
@@ -49,6 +53,10 @@ pub struct Vector3
     pub x: f64,
     pub y: f64,
     pub z: f64
+}
+impl ConstDefault for Vector3
+{
+    const DEFAULT: Vector3 = Vector3 { x: 0.0, y: 0.0, z: 0.0 };
 }
 
 /// A 4-dimensional vector
@@ -59,6 +67,10 @@ pub struct Vector4
     pub y: f64,
     pub z: f64,
     pub w: f64
+}
+impl ConstDefault for Vector4
+{
+    const DEFAULT: Vector4 = Vector4 { x: 0.0, y: 0.0, z: 0.0, w: 0.0 };
 }
 
 impl Display for Vector2

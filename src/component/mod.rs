@@ -44,6 +44,78 @@ use crate::complex_enum;
 
 component_struct!
 (
+    /// [background](https://aframe.io/docs/1.2.0/components/background.html)
+    Background, 
+    color: "color" color::Rgb = color::BLACK,
+    transparent: "transparent" bool = false
+);
+component_struct!
+(
+    /// [cursor](https://aframe.io/docs/1.2.0/components/cursor.html)
+    Cursor, 
+    // TODO: True event handling
+    down_events: "downEvents" List<Cow<'static, str>> = List::DEFAULT,
+    fuse: "fuse" bool = false,
+    fuse_timeout: "fuseTimeout" u64 = 1500,
+    mouse_cursor_styles_enabled: "mousecursorstylesenabled" bool = true,
+    ray_origin: "rayOrigin" RayOrigin = RayOrigin::Entity,
+    up_events: "upEvents" List<Cow<'static, str>> = List::DEFAULT
+);
+simple_enum!
+{
+    /// Where the intersection ray is cast from (i.e.,entity or mouse).
+    RayOrigin,
+    Mouse => "mouse",
+    Entity => "entity"
+}
+component_struct!
+(
+    /// [daydream-controls](https://aframe.io/docs/1.2.0/components/daydream-controls.html)
+    DaydreamControls, 
+    arm_model: "armModel" bool = true,
+    botton_color: "bottonColor" color::Rgb = color::BLACK,
+    button_touched_color: "buttonTouchedColor" color::Rgb = color::GREY47,
+    button_highlight_color: "buttonHighlightColor" color::Rgb = color::WHITE,
+    hand: "hand" Hand = Hand::None,
+    model: "model" bool = true,
+    orientation_offset: "orientationOffset" Vector3 = Vector3::DEFAULT
+);
+component_struct!
+(
+    /// [device-orientation-permission-ui](https://aframe.io/docs/1.2.0/components/device-orientation-permission-ui.html)
+    DeviceOrientationPermissionUI, 
+    enabled: "enabled" bool = true,
+    deny_button_text: "denyButtonText" Cow<'static, str> = Cow::Borrowed("Deny"),
+    allow_button_text: "allowButtonText" Cow<'static, str> = Cow::Borrowed("Allow"),
+    cancel_button_text: "cancelButtonText" Cow<'static, str> = Cow::Borrowed("Cancel"),
+    device_motion_message: "deviceMotionMessage" Cow<'static, str> = Cow::Borrowed("Enable Device Motion"),
+    mobile_desktop_message: "mobiledestkopmessage" Cow<'static, str> = Cow::Borrowed("Switch to Mobile Browsing"),
+    https_message: "httpsMessage" Cow<'static, str> = Cow::Borrowed("Switch to HTTPS")
+);
+simple_enum!
+{
+    /// Set hand that will be tracked (i.e., right, left).
+    Hand,
+    Right => "right",
+    Left => "left",
+    None => ""
+}
+component_struct!
+(
+    /// [fog](https://aframe.io/docs/1.2.0/components/fog.html)
+    Fog, 
+    fog_type: "" FogType = FogType::Linear { near: 1, far: 1000 },
+    color: "color" color::Rgb = color::BLACK
+);
+complex_enum!
+{
+    /// Type of fog distribution. Can be linear or exponential.
+    FogType,
+    Linear "type: linear; near: {}; far: {}" => { near: u64, far: u64 },
+    Exponential "type: exponential; density: {}" => { density: f64}
+}
+component_struct!
+(
     /// [position](https://aframe.io/docs/1.2.0/components/position.html)
     Position :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0
 );

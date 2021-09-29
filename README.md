@@ -42,7 +42,7 @@ Defining a new primitive:
 
 ## Assets    
 
-The `assets!` and `mixin!` macros are provided to define an `Assets` struct. Their signatures are as follows:    
+The `assets!` and `mixin!` macros are provided to define an `Assets` struct.   
 
 [assets!](https://docs.rs/aframe/*/aframe/macro.assets.html)    
 [mixin!](https://docs.rs/aframe/*/aframe/macro.mixin.html)    
@@ -312,3 +312,10 @@ html!
     } />
 }
 ```
+
+# WIP/Missing Features
+
+* Event handling
+* State handling
+* Complete components/primitives implementation
+* Access to Aframe utility functions
