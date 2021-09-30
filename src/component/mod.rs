@@ -116,6 +116,18 @@ complex_enum!
 }
 component_struct!
 (
+    /// [gearvr-controls](https://aframe.io/docs/1.2.0/components/gearvr-controls.html)
+    GearVRControls, 
+    arm_model: "armModel" bool = true,
+    button_color: "buttonColor" color::Rgb = color::BLACK,
+    button_touched_color: "buttonTouchedColor" color::Rgb = color::GREY47,
+    button_highlight_color: "buttonHighlightColor" color::Rgb = color::WHITE,
+    hand: "hand" Hand = Hand::None,
+    model: "model" bool = true,
+    orientation_offset: "orientationOffset" Vector3 = Vector3::DEFAULT
+);
+component_struct!
+(
     /// [position](https://aframe.io/docs/1.2.0/components/position.html)
     Position :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0
 );
@@ -470,8 +482,14 @@ complex_enum!
         vertex_a: Vector3,
         vertex_b: Vector3,
         vertex_c: Vector3
+    },
+    // TODO: A true high-level implementation of this needs to be done. This
+    // implementation is just a placeholder.
+    Custom
+    "{}" =>
+    {
+        data: Cow<'static, str>
     }
-    //Custom(CustomGeometry)
 );
 component_struct!
 (

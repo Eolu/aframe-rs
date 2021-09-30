@@ -18,12 +18,12 @@ use wasm_bindgen::prelude::*;
 /// (
 ///     hashmap!
 ///     {
-///         "speedMult".into() => Property::number(IsUniform::Yes, 1.0.into()),
-///         "alpha".into() => Property::number(IsUniform::Yes, 1.0.into()),
-///         "alpha2".into() => Property::number(IsUniform::Yes, 1.0.into()),
-///         "color".into() => Property::color(IsUniform::Yes, color::BLACK.into()),
-///         "color2".into() => Property::color(IsUniform::Yes, color::WHITE.into()),
-///         "iTime".into() => Property::time(IsUniform::Yes, None)
+///         "speedMult".into() => ShaderProperty::number(IsUniform::Yes, 1.0.into()),
+///         "alpha".into() => ShaderProperty::number(IsUniform::Yes, 1.0.into()),
+///         "alpha2".into() => ShaderProperty::number(IsUniform::Yes, 1.0.into()),
+///         "color".into() => ShaderProperty::color(IsUniform::Yes, color::BLACK.into()),
+///         "color2".into() => ShaderProperty::color(IsUniform::Yes, color::WHITE.into()),
+///         "iTime".into() => ShaderProperty::time(IsUniform::Yes, None)
 ///     }, 
 ///     SIMPLE_VS.into(),
 ///     STROBE_FS.into()
@@ -33,7 +33,7 @@ use wasm_bindgen::prelude::*;
 #[derive(Serialize)]
 pub struct Shader<'a, 'b, 'c>
 {
-    pub schema: HashMap<Cow<'a, str>, Property>,
+    pub schema: HashMap<Cow<'a, str>, ShaderProperty>,
     #[serde(rename = "vertexShader")] 
     pub vertex_shader: Cow<'b, str>,
     #[serde(rename = "fragmentShader")] 
@@ -45,7 +45,7 @@ impl<'a, 'b, 'c> Shader<'a, 'b, 'c>
     /// Define a new shader.
     pub fn new
     (
-        schema: HashMap<Cow<'a, str>, Property>, 
+        schema: HashMap<Cow<'a, str>, ShaderProperty>, 
         vertex_shader: Cow<'b, str>, 
         fragment_shader: Cow<'c, str>
     ) -> Self
@@ -64,7 +64,7 @@ impl<'a, 'b, 'c> Shader<'a, 'b, 'c>
 /// A property for a shader. This includes the shader type, whether or not this 
 /// property is a uniform, and an optional default value.
 #[derive(Serialize)]
-pub struct Property
+pub struct ShaderProperty
 {
     #[serde(rename = "type")] 
     pub shader_type: &'static str,
@@ -74,51 +74,51 @@ pub struct Property
     pub default: Option<DefaultVal>
 }
 
-impl Property
+impl ShaderProperty
 {
     pub fn color(is: IsUniform, default: Option<color::Rgb>) -> Self
     {
-        Property{ shader_type: "color", is, default: default.map(color::Rgb::into).map(DefaultVal::Str) }
+        ShaderProperty{ shader_type: "color", is, default: default.map(color::Rgb::into).map(DefaultVal::Str) }
     }
 
     pub fn array(is: IsUniform, default: Option<Vector3>) -> Self
     {
-        Property{ shader_type: "array", is, default: default.map(DefaultVal::Vec3) }
+        ShaderProperty{ shader_type: "array", is, default: default.map(DefaultVal::Vec3) }
     }
 
     pub fn int(is: IsUniform, default: Option<i64>) -> Self
     {
-        Property{ shader_type: "int", is, default: default.map(DefaultVal::Int) }
+        ShaderProperty{ shader_type: "int", is, default: default.map(DefaultVal::Int) }
     }
 
     pub fn number(is: IsUniform, default: Option<f64>) -> Self
     {
-        Property{ shader_type: "number", is, default: default.map(DefaultVal::Number) }
+        ShaderProperty{ shader_type: "number", is, default: default.map(DefaultVal::Number) }
     }
 
     pub fn map(is: IsUniform, default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ shader_type: "map", is, default: default.map(DefaultVal::Str) }
+        ShaderProperty{ shader_type: "map", is, default: default.map(DefaultVal::Str) }
     }
 
     pub fn time(is: IsUniform, default: Option<f64>) -> Self
     {
-        Property{ shader_type: "time", is, default: default.map(DefaultVal::Number) }
+        ShaderProperty{ shader_type: "time", is, default: default.map(DefaultVal::Number) }
     }
 
     pub fn vec2(is: IsUniform, default: Option<Vector2>) -> Self
     {
-        Property{ shader_type: "vec2", is, default: default.map(DefaultVal::Vec2) }
+        ShaderProperty{ shader_type: "vec2", is, default: default.map(DefaultVal::Vec2) }
     }
 
     pub fn vec3(is: IsUniform, default: Option<Vector3>) -> Self
     {
-        Property{ shader_type: "vec3", is, default: default.map(DefaultVal::Vec3) }
+        ShaderProperty{ shader_type: "vec3", is, default: default.map(DefaultVal::Vec3) }
     }
 
     pub fn vec4(is: IsUniform, default: Option<Vector4>) -> Self
     {
-        Property{ shader_type: "vec4", is, default: default.map(DefaultVal::Vec4) }
+        ShaderProperty{ shader_type: "vec4", is, default: default.map(DefaultVal::Vec4) }
     }
 }
 

@@ -17,4 +17,7 @@ extern
     /// [register-a-custom-shader-material](https://aframe.io/docs/1.2.0/components/material.html#register-a-custom-shader-material)
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerShader(name: &str, data: JsValue);
+    /// [register-a-custom-geometry](https://aframe.io/docs/1.2.0/components/geometry.html#register-a-custom-geometry)
+    #[wasm_bindgen(js_namespace = AFRAME)]
+    pub fn registerGeometry(name: &str, data: JsValue);
 }

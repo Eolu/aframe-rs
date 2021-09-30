@@ -318,4 +318,5 @@ html!
 * Event handling
 * State handling
 * Complete components/primitives implementation
+* High-level support for custom geometry
 * Access to Aframe utility functions

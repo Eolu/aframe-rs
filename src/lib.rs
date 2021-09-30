@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 #[cfg(test)]
-mod tests;
+pub mod tests;
 
 pub mod sys;
 pub mod shader;

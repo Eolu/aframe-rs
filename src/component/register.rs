@@ -1,6 +1,6 @@
 //! Allows componenets to be registered in aframe. See the `component_def` macro for detailed docs.
 
-use crate::sys::registerComponent;
+use crate::sys::{registerComponent, registerGeometry};
 use crate::utils::*;
 use std::{borrow::Cow, collections::HashMap};
 
@@ -17,7 +17,7 @@ use js_sys::{Object, Reflect};
 /// | field | syntax explanation | description |
 /// |-------|--------------------|-------------|
 /// | dependencies | strings separated by commas | names of components that must be initialized prior to this one |
-/// | schema | A hashmap containing string keys and Property values. Recommend the maplit crate | Describes component properties |
+/// | schema | A hashmap containing string keys and ComponentProperty values. Recommend the maplit crate | Describes component properties |
 /// | multiple | boolean value | True to allow multiple components on a single entity |
 /// | init | JsValue created from a js_sys::Function() | Called on initialization |
 /// | update | JsValue created from a js_sys::Function(oldData) | Called whenever the component’s properties change |
@@ -30,7 +30,7 @@ use js_sys::{Object, Reflect};
 ///
 /// All parameteres are optional, although the order must be exactly as shown. 
 /// `dependencies` should be a comma-separated list of strings followed by a 
-/// semicolon. `schema` should be a HashMap with string keys and `Property` 
+/// semicolon. `schema` should be a HashMap with string keys and `ComponentProperty` 
 /// values. `multiple` is a boolean value. The rest are strings containing 
 /// javascript code. A `js!` macro is provided to allow inline javascript code 
 /// to be included in the Rust code (See the docs for the `js!` macro for 
@@ -42,9 +42,9 @@ use js_sys::{Object, Reflect};
 ///     dependencies: "dependency1", "dependency2", some_string,
 ///     schema: hashmap!
 ///     {
-///         "position" => Property::float("number", None),
-///         "text" => Property::string("string", Some(Cow::Borrowed("x"))),
-///         "autoplay" => Property::boolean("boolean", Some(true))
+///         "position" => ComponentProperty::float("number", None),
+///         "text" => ComponentProperty::string("string", Some(Cow::Borrowed("x"))),
+///         "autoplay" => ComponentProperty::boolean("boolean", Some(true))
 ///     },
 ///     multiple: true,
 ///     init: js!
@@ -110,11 +110,41 @@ macro_rules! component_def
     }
 }
 
+#[macro_export]
+macro_rules! geometry_def
+{
+    (
+        $(schema: $schema:expr,)?
+        $(init: $init:expr)?
+    ) => 
+    {
+        $crate::component::GeometryReg
+        {
+            $(schema: $schema,)?
+            $(init: $init.into(),)?
+            ..$crate::component::GeometryReg::default()
+        }
+    }
+}
+
+/// Helper function to attach JsFunctions to a serialized JsValue
+fn define_property(src: &Object, name: &str, value: &Object)
+{
+    if src.unchecked_ref::<JsValue>() != &JsValue::UNDEFINED
+    {
+        #[allow(unused_unsafe)]
+        unsafe
+        {
+            Reflect::set(src, &JsValue::from_str(name), value).expect(&format!("Failed to define property on: {}", name));
+        }
+    }
+}
+
 /// Component registration definition. All JsValues should be derived from [`js_sys::Function`]
 #[derive(Serialize, Clone)]
 pub struct ComponentReg
 {
-    pub schema: HashMap<&'static str, Property>,
+    pub schema: HashMap<&'static str, ComponentProperty>,
     pub dependencies: Cow<'static, [Cow<'static, str>]>,
     pub multiple: bool,
     // TODO: events: HashMap<Cow<'static, str>, Function(event)>
@@ -153,14 +183,14 @@ impl From<&ComponentReg> for JsValue
     fn from(cmr: &ComponentReg) -> Self 
     {
         let js_value = JsValue::from_serde(cmr).expect("Failed to convert ComponentReg into JsObject");
-        ComponentReg::define_property(js_value.unchecked_ref(), "init", (cmr.init).unchecked_ref());
-        ComponentReg::define_property(js_value.unchecked_ref(), "update", (cmr.update).unchecked_ref());
-        ComponentReg::define_property(js_value.unchecked_ref(), "tick", (cmr.tick).unchecked_ref());
-        ComponentReg::define_property(js_value.unchecked_ref(), "tock", (cmr.tock).unchecked_ref());
-        ComponentReg::define_property(js_value.unchecked_ref(), "remove", (cmr.remove).unchecked_ref());
-        ComponentReg::define_property(js_value.unchecked_ref(), "pause", (cmr.pause).unchecked_ref());
-        ComponentReg::define_property(js_value.unchecked_ref(), "play", (cmr.play).unchecked_ref());
-        ComponentReg::define_property(js_value.unchecked_ref(), "update_schema", (cmr.update_schema).unchecked_ref());
+        define_property(js_value.unchecked_ref(), "init", (cmr.init).unchecked_ref());
+        define_property(js_value.unchecked_ref(), "update", (cmr.update).unchecked_ref());
+        define_property(js_value.unchecked_ref(), "tick", (cmr.tick).unchecked_ref());
+        define_property(js_value.unchecked_ref(), "tock", (cmr.tock).unchecked_ref());
+        define_property(js_value.unchecked_ref(), "remove", (cmr.remove).unchecked_ref());
+        define_property(js_value.unchecked_ref(), "pause", (cmr.pause).unchecked_ref());
+        define_property(js_value.unchecked_ref(), "play", (cmr.play).unchecked_ref());
+        define_property(js_value.unchecked_ref(), "update_schema", (cmr.update_schema).unchecked_ref());
         js_value
     }
 }
@@ -171,110 +201,98 @@ impl ComponentReg
     {
         registerComponent(name, (&self).into());
     }
-
-    fn define_property(src: &Object, name: &str, value: &Object)
-    {
-        if src.unchecked_ref::<JsValue>() != &JsValue::UNDEFINED
-        {
-            #[allow(unused_unsafe)]
-            unsafe
-            {
-                Reflect::set(src, &JsValue::from_str(name), value).expect(&format!("Failed to define property on: {}", name));
-            }
-        }
-    }
 }
 
 /// A property for a ComponentReg, contains the type string and the default value.
 #[derive(Serialize, Clone)]
-pub struct Property
+pub struct ComponentProperty
 {
     #[serde(rename = "type")] 
     component_type: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default: Option<DefaultVal>
+    default: Option<AframeVal>
 }
 
-impl Property
+impl ComponentProperty
 {
     pub fn array(default: Option<Vec<Cow<'static, str>>>) -> Self
     {
-        Property{ component_type: "array", default: default.map(DefaultVal::Array) }
+        ComponentProperty{ component_type: "array", default: default.map(AframeVal::Array) }
     }
 
     pub fn asset(default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ component_type: "asset", default: default.map(DefaultVal::Str) }
+        ComponentProperty{ component_type: "asset", default: default.map(AframeVal::Str) }
     }
 
     pub fn audio(default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ component_type: "audio", default: default.map(DefaultVal::Str) }
+        ComponentProperty{ component_type: "audio", default: default.map(AframeVal::Str) }
     }
 
     pub fn boolean(default: Option<bool>) -> Self
     {
-        Property{ component_type: "boolean", default: default.map(DefaultVal::Bool) }
+        ComponentProperty{ component_type: "boolean", default: default.map(AframeVal::Bool) }
     }
 
     pub fn color(default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ component_type: "color", default: default.map(DefaultVal::Str) }
+        ComponentProperty{ component_type: "color", default: default.map(AframeVal::Str) }
     }
 
     pub fn int(default: Option<i64>) -> Self
     {
-        Property{ component_type: "int", default: default.map(DefaultVal::Int) }
+        ComponentProperty{ component_type: "int", default: default.map(AframeVal::Int) }
     }
 
     pub fn map(default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ component_type: "map", default: default.map(DefaultVal::Str) }
+        ComponentProperty{ component_type: "map", default: default.map(AframeVal::Str) }
     }
 
     pub fn model(default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ component_type: "model", default: default.map(DefaultVal::Str) }
+        ComponentProperty{ component_type: "model", default: default.map(AframeVal::Str) }
     }
 
     pub fn number(default: Option<f32>) -> Self
     {
-        Property{ component_type: "number", default: default.map(DefaultVal::Float) }
+        ComponentProperty{ component_type: "number", default: default.map(AframeVal::Float) }
     }
 
     pub fn selector(default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ component_type: "selector", default: default.map(DefaultVal::Str) }
+        ComponentProperty{ component_type: "selector", default: default.map(AframeVal::Str) }
     }
 
     pub fn selector_all(default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ component_type: "selectorAll", default: default.map(DefaultVal::Str) }
+        ComponentProperty{ component_type: "selectorAll", default: default.map(AframeVal::Str) }
     }
 
     pub fn string(default: Option<Cow<'static, str>>) -> Self
     {
-        Property{ component_type: "string", default: default.map(DefaultVal::Str) }
+        ComponentProperty{ component_type: "string", default: default.map(AframeVal::Str) }
     }
 
     pub fn vec2(default: Option<Vector2>) -> Self
     {
-        Property{ component_type: "vec2", default: default.map(DefaultVal::Vec2) }
+        ComponentProperty{ component_type: "vec2", default: default.map(AframeVal::Vec2) }
     }
 
     pub fn vec3(default: Option<Vector3>) -> Self
     {
-        Property{ component_type: "vec3", default: default.map(DefaultVal::Vec3) }
+        ComponentProperty{ component_type: "vec3", default: default.map(AframeVal::Vec3) }
     }
 
     pub fn vec4(default: Option<Vector4>) -> Self
     {
-        Property{ component_type: "vec4", default: default.map(DefaultVal::Vec4) }
+        ComponentProperty{ component_type: "vec4", default: default.map(AframeVal::Vec4) }
     }
 }
 
 #[derive(Clone)]
-pub enum DefaultVal
+pub enum AframeVal
 {
     Array(Vec<Cow<'static, str>>),
     Bool(bool),
@@ -286,7 +304,7 @@ pub enum DefaultVal
     Vec4(Vector4)
 }
 
-impl Serialize for DefaultVal
+impl Serialize for AframeVal
 {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error>
     {
@@ -301,5 +319,63 @@ impl Serialize for DefaultVal
             Self::Bool(b) => b.serialize(serializer),
             Self::Int(i) => i.serialize(serializer),
         }
+    }
+}
+
+/// Geometry registration definition. The `init` JsValue should be derived from [`js_sys::Function`]
+#[derive(Serialize, Clone)]
+pub struct GeometryReg
+{
+    pub schema: HashMap<&'static str, GeometryProperty>,
+    #[serde(skip)] pub init: JsValue,
+}
+impl Default for GeometryReg
+{
+    fn default() -> Self 
+    {
+        Self
+        {
+            schema: HashMap::new(),
+            init: js_sys::Function::default().into(),
+        }
+    }
+}
+impl From<&GeometryReg> for JsValue
+{
+    fn from(cmr: &GeometryReg) -> Self 
+    {
+        let js_value = JsValue::from_serde(cmr).expect("Failed to convert GeometryReg into JsObject");
+        define_property(js_value.unchecked_ref(), "init", (cmr.init).unchecked_ref());
+        js_value
+    }
+}
+impl GeometryReg
+{
+    /// Register a custom geometry in aframe. Warning: Aframe must be initialized before this is called.
+    pub unsafe fn register(self, name: &str)
+    {
+        registerGeometry(name, (&self).into());
+    }
+}
+
+/// A property for a GeometryReg
+#[derive(Serialize, Clone)]
+pub struct GeometryProperty
+{
+    default: AframeVal,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    min: Option<AframeVal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max: Option<AframeVal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "type")] 
+    component_type: Option<&'static str>
+}
+
+impl GeometryProperty
+{
+    pub fn new(default: AframeVal, min: Option<AframeVal>, max: Option<AframeVal>, component_type: Option<&'static str>) -> Self
+    {
+        GeometryProperty{ default, component_type, min, max }
     }
 }
