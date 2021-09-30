@@ -4,13 +4,29 @@ This is an [Aframe](https://aframe.io/) library for rust. It's still fairly expe
 
 # Setup
 
-Currently, this crate doesn't contain any features to initialize Aframe itself, so in your HTML header you ought to include:
+### Initialization
+
+This crate also contains an `init` feature which may be enabled to allow initialization from an async function:
+
+```rust,ignore
+
+async fn app_main()
+{
+    aframe::init_aframe().await;
+    // ... Now you can safely continue
+}
+
+```
+
+You can also initialize simply by adding the Aframe script to your HTML header:
 
 ```html
 <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 ```
 
-Beyond that, you can either use this crate's `Htmlify` trait to output raw html, or use the `yew-support` feature to create a yew componment (described lower in this readme) to output your actual Aframe scene.
+### Use
+
+You can either use this crate's `Htmlify` trait to output raw html, or use the `yew-support` feature to create a yew componment (described lower in this readme) to output your actual Aframe scene.
 
 # API    
 
@@ -34,7 +50,7 @@ See the [component](https://docs.rs/aframe/*/aframe/component/) module for more 
 pre-defined component structs.
 
 ## Custom Geometry
-Defining a new custom geometry:
+Defining a new custom geometry:    
 [geometry_def!](https://docs.rs/aframe/*/aframe/macro.geometry_def.html)    
 
 Not yet implemented:
