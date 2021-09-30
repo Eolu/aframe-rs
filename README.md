@@ -33,6 +33,14 @@ Instantiating a component struct:
 See the [component](https://docs.rs/aframe/*/aframe/component/) module for more information and for 
 pre-defined component structs.
 
+## Custom Geometry
+Defining a new custom geometry:
+[geometry_def!](https://docs.rs/aframe/*/aframe/macro.geometry_def.html)    
+
+Not yet implemented:
+* `geometry_struct!` macro to declare structure of custom geometry data
+* `geometry!` macro to serve as a helper when instantiating custom geometry
+
 ## Entities & Primitives    
 Instantiating an entity or defined primitive:    
 [entity!](https://docs.rs/aframe/*/aframe/macro.entity.html)   

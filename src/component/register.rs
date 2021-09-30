@@ -110,6 +110,40 @@ macro_rules! component_def
     }
 }
 
+/// Top-level macro to define custom geometries. Syntax resemles but is simpler
+/// than the `component_def!` macro.
+/// The `js!` macro is available for writing inline javascript, and returns a
+/// js_sys::Function object. This macro calls `into` on expressions passed into the 
+/// fields expecting function, allowing the `js!` macro to be used as a catch-all.
+/// Takes the optional fields described in the table below.
+///
+/// | field | syntax explanation | description |
+/// |-------|--------------------|-------------|
+/// | schema | A hashmap containing string keys and GeometryProperty values. Recommend the maplit crate | Describes custom geometry properties |
+/// | init | JsValue created from a js_sys::Function() | Called on initialization |
+///
+/// All parameteres are optional, although leaving either out may not result in 
+/// a meaningful geometry definition.
+/// ```ignore
+/// // Example (this is an exact replica of the builtin `box` geometry): 
+/// let newbox = geometry_def!
+/// {
+///     schema: hashmap!
+///     {
+///         "depth" => GeometryProperty::new(AframeVal::Float(1.0), Some(AframeVal::Float(0.0)), None, None),
+///         "height" => GeometryProperty::new(AframeVal::Float(1.0), Some(AframeVal::Float(0.0)), None, None),
+///         "width" => GeometryProperty::new(AframeVal::Float(1.0), Some(AframeVal::Float(0.0)), None, None),
+///         "segmentsHeight" => GeometryProperty::new(AframeVal::Int(1), Some(AframeVal::Int(1)), Some(AframeVal::Int(20)), Some("int")),
+///         "segmentsWidth" => GeometryProperty::new(AframeVal::Int(1), Some(AframeVal::Int(1)), Some(AframeVal::Int(20)), Some("int")),
+///         "segmentsDepth" => GeometryProperty::new(AframeVal::Int(1), Some(AframeVal::Int(1)), Some(AframeVal::Int(20)), Some("int")),
+///     },
+///     init: js!(data =>> this.geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);)
+/// };
+/// unsafe
+/// {
+///     newbox.register("newbox");
+/// }
+/// ```
 #[macro_export]
 macro_rules! geometry_def
 {
