@@ -6,7 +6,7 @@ This is an [Aframe](https://aframe.io/) library for rust. It's still fairly expe
 
 ### Initialization
 
-This crate also contains an `init` feature which may be enabled to allow initialization from an async function:
+This crate contains an `init` feature which may be enabled to allow initialization from an async function:
 
 ```rust,ignore
 
