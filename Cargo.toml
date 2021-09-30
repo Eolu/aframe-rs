@@ -1,6 +1,6 @@
 [package]
 name = "aframe"
-version = "0.2.3"
+version = "0.2.4"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 authors = ["Griffin O'Neill <gsoneill1003@gmail.com>"]
@@ -38,3 +38,6 @@ web-sys = { version = "0.3", features = ["Window", "Document", "HtmlElement", "E
 wasm-bindgen-test = "0.3"
 async-lock = "2.4"
 futures = "0.3"
+
+[package.metadata.docs.rs]
+all-features = true

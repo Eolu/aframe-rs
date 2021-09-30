@@ -91,63 +91,17 @@ The lowest-level calls to Aframe are defined in the `sys` module:
 
 ## yew_support feature
 
-The `yew_support` feature adds yew support to this crate. At its core, all this does is implement `From<&Scene> for Html`. This allows you to write a yew component as such:
+The `yew_support` feature adds yew support to this crate. At its core, all this does is implement `From<&Scene> for Html` along with a few other conversions to yew's Html type.
 
-```rust,ignore
-static INIT: AtomicBool = AtomicBool::new(false);
+See the [yew-ext module page](https://docs.rs/aframe/*/aframe/yew_ext/index.html)  for an example.
 
-#[derive(Clone, PartialEq, Properties)]
-pub struct AframeProps
-{
-    scene: aframe::Scene
-}
+# WIP/Missing Features
 
-pub struct Aframe
-{
-    props: AframeProps
-}
-
-impl crate::utils::Component for Aframe 
-{
-    type Message = Msg;
-    type Properties = AframeProps;
-
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self 
-    {
-        // Register aframe stuff first time only
-        if !INIT.load(Ordering::Relaxed)
-        {
-            unsafe 
-            {
-                // Code in this block registers shaders, components, and primitives with aframe
-                shaders::register_shaders(); 
-                component::register_components();
-                primitive::register_primitives();
-            }
-            INIT.store(true, Ordering::Relaxed)
-        }
-        Self 
-        { 
-            props
-        }
-    }
-
-    fn update(&mut self, _: Self::Message) -> ShouldRender 
-    {
-        true
-    }
-
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender 
-    {
-        false
-    }
-
-    fn view(&self) -> Html 
-    {
-        (&self.props.scene).into()
-    }
-}
-```
+* Event handling
+* State handling
+* Complete components/primitives implementation
+* High-level support for custom geometry
+* Access to Aframe utility functions
 
 # Example
 
@@ -336,11 +290,3 @@ html!
     } />
 }
 ```
-
-# WIP/Missing Features
-
-* Event handling
-* State handling
-* Complete components/primitives implementation
-* High-level support for custom geometry
-* Access to Aframe utility functions
