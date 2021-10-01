@@ -1,4 +1,4 @@
-use std::{borrow::Cow, collections::HashMap};
+use std::{borrow::Cow, collections::HashMap, sync::atomic::{AtomicBool, Ordering}};
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 use crate::{*, component::{Position, Rotation}};
@@ -12,10 +12,21 @@ extern "C"
     fn setTimeout(closure: &Closure<dyn FnMut()>, time: u32) -> i32;
 }
 
+async fn init_aframe_tests()
+{
+    // Once this has happened, don't do it again
+    static INIT: AtomicBool = AtomicBool::new(false);
+    if !INIT.load(Ordering::Relaxed)
+    {
+        crate::init_aframe().await.unwrap();
+        INIT.store(true, Ordering::Relaxed);
+    }
+}
+
 #[wasm_bindgen_test]
 async fn test_register_component() 
 {
-    crate::init_aframe().await;
+    init_aframe_tests().await;
 
     let mut schema = HashMap::new();
     schema.insert("updateFreq", ComponentProperty::number(Some(500.0)));
@@ -44,7 +55,7 @@ async fn test_register_component()
 #[wasm_bindgen_test]
 async fn test_register_geometry() 
 {
-    crate::init_aframe().await;
+    init_aframe_tests().await;
 
     let mut schema = HashMap::new();
     schema.insert("depth", GeometryProperty::new(AframeVal::Float(1.0), Some(AframeVal::Float(0.0)), None, None));

@@ -26,55 +26,73 @@ pub use crate::yew_ext::*;
 /// to the document header and waiting 1 second. 
 /// Current Aframe version: 1.2.0
 #[cfg(feature = "init")]
-pub async fn init_aframe()
+pub async fn init_aframe() -> Result<(), InitError>
 {
     const LINK: &'static str = "https://aframe.io/releases/1.2.0/aframe.min.js";
     
     use wasm_bindgen::prelude::*;
     use wasm_bindgen::JsCast;
-    use std::sync::{Once, Arc};
+    use std::sync::{Arc, Mutex};
     use async_lock::Barrier;
     use futures::executor::block_on;
 
-    static INIT: Once = Once::new();
-    if INIT.is_completed()
-    {
-        return;
-    }
-
+    let result: Arc<Mutex<Result<(), InitError>>> = Arc::new(Mutex::new(Err(InitError)));
     let barrier = Arc::new(Barrier::new(2));
 
-    INIT.call_once(|| 
+    let result_outer = result.clone();
+    let barrier_inner = barrier.clone();
+
+    // Append Aframe to document
+    let document = web_sys::window()
+        .and_then(|win| win.document())
+        .ok_or(InitError)?;
+    let head = document.head()
+        .ok_or(InitError)?;
+    let script_element = document.create_element("script")
+        .map_err(|_| InitError)?;
+    let script_element = script_element.dyn_into::<web_sys::HtmlElement>()
+        .map_err(|_| InitError)?;
+    head.append_child(&script_element)
+        .map_err(|_| InitError)?;
+    let closure = 
     {
-        // Append Aframe to document
-        if let Some(document) = web_sys::window().and_then(|win| win.document())
+        Closure::once(Box::new(move || 
         {
-            if let Some(head) = document.head()
-            {
-                if let Ok(script_element) = document.create_element("script")
-                {
-                    if let Ok(script_element) = script_element.dyn_into::<web_sys::HtmlElement>()
-                    {
-                        head.append_child(&script_element).unwrap();
-                        let closure = 
-                        {
-                            let barrier = barrier.clone();
-                            Closure::wrap(Box::new(move || 
-                            {
-                                block_on(barrier.wait());
-                            }) as Box<dyn FnMut()>)
-                        };
-                        script_element.set_onload(Some(closure.as_ref().unchecked_ref()));
-                        closure.forget();
-                        if let Ok(_) = script_element.set_attribute("src", LINK)
-                        {
-                            // Success!
-                        }
-                    }
-                }
-            }
-        }
-    });
+            *result.lock().unwrap() = Ok(());
+            drop(result);
+            block_on(barrier_inner.wait());
+        }) as Box<dyn FnOnce()>)
+    };
+    script_element.set_onload(Some(closure.as_ref().unchecked_ref()));
+    closure.forget();
+    script_element.set_attribute("src", LINK)
+        .map_err(|_| InitError)?;
 
     barrier.wait().await;
+    Arc::try_unwrap(result_outer)
+        .map_err(|_| InitError)
+        .and_then(|mutex| mutex.into_inner().map_err(|_| InitError))
+        .and_then(|result| result)
+}
+
+#[cfg(feature = "init")]
+#[derive(Debug, Clone, Copy)]
+pub struct InitError;
+
+#[cfg(feature = "init")]
+impl std::fmt::Display for InitError 
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result 
+    {
+        write!(f, "Failed to initialize")
+    }
+}
+
+#[cfg(feature = "init")]
+impl std::error::Error for InitError 
+{
+    fn description(&self) -> &str 
+    {
+        "Failed to initialize"
+    }
 }

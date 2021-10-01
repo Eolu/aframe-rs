@@ -10,9 +10,9 @@ This crate contains an `init` feature which may be enabled to allow initializati
 
 ```rust,ignore
 
-async fn app_main()
+async fn app_main() -> Result<(), aframe::InitError>
 {
-    aframe::init_aframe().await;
+    aframe::init_aframe().await?;
     // ... Now you can safely continue
 }
 
