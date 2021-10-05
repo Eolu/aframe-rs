@@ -128,6 +128,73 @@ component_struct!
 );
 component_struct!
 (
+    /// [gltf-model](https://aframe.io/docs/1.2.0/components/gltf-model.html)
+    GltfModel, 
+    string: "" Cow<'static, str> = Cow::Borrowed("")
+);
+component_struct!
+(
+    /// [hand-controls](https://aframe.io/docs/1.2.0/components/hand-controls.html)
+    HandControls, 
+    color: "color" color::Rgb = color::WHITE,
+    hand: "hand" Hand = Hand::Left,
+    hand_model_style: "handModelStyle" HandModelStyle = HandModelStyle::LowPoly
+);
+simple_enum!
+{
+    /// Style of the hand 3D model loaded. Can be lowPoly, highPoly or toon.
+    HandModelStyle,
+    LowPoly => "lowPoly",
+    HighPoly => "highPoly",
+    Toon => "toon"
+}
+component_struct!
+(
+    /// [hand-controls](https://aframe.io/docs/1.2.0/components/hand-controls.html)
+    HandTrackingControls, 
+    hand: "hand" Hand = Hand::Left,
+    model_color: "modelColor" color::Rgb = color::WHITE,
+    model_style: "modelStyle" ModelStyle = ModelStyle::Mesh
+);
+simple_enum!
+{
+    /// Mesh representing the hand or dots matching the joints
+    ModelStyle,
+    Mesh => "mesh",
+    Dots => "dots"
+}
+component_struct!
+(
+    /// [laser-controls](https://aframe.io/docs/1.2.0/components/laser-controls.html)
+    LaserControls, 
+    enter_vr: "enterVR" bool = true
+);
+component_struct!
+(
+    /// [keyboard-shortcuts](https://aframe.io/docs/1.2.0/components/keyboard-shortcuts.html)
+    KeyboardShortcuts, 
+    hand: "hand" Hand = Hand::Left,
+    model: "model" bool = true,
+    default_model_color: "defaultModelColor" color::Rgb = color::WHITE
+);
+component_struct!
+(
+    /// [layer](https://aframe.io/docs/1.2.0/components/layer.html)
+    Layer, 
+    layer_type: "type" Hand = Hand::Left,
+    src: "src" bool = true,
+    rotate_cubemap: "rotateCubemap" LayerType = LayerType::Quad
+);
+simple_enum!
+{
+    /// quad, monocubemap or stereocubemap
+    LayerType,
+    Quad => "quad",
+    MonoCubeMap => "monocubemap",
+    StereoCubeMap => "stereocubemap"
+}
+component_struct!
+(
     /// [position](https://aframe.io/docs/1.2.0/components/position.html)
     Position :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0
 );
