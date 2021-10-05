@@ -124,6 +124,7 @@ impl AssetItem
 }
 
 /// An image asset
+/// TODO: Support the full HTML img tag
 #[derive(Debug, Clone, PartialEq)]
 pub struct Image
 {

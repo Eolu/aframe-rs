@@ -3,6 +3,7 @@ pub mod htmlify;
 
 pub use htmlify::*;
 
+pub use const_default::ConstDefault;
 use std::fmt::Display;
 use serde::Serialize;
 pub use js_sys::Function;
@@ -25,13 +26,6 @@ macro_rules! js
     {
         $crate::utils::Function::new_no_args(stringify!($($tt)*))
     }
-}
-
-/// This trait sholud be implemented by all components, defines a const DEFAULT 
-/// used to simplify construction.
-pub trait ConstDefault
-{
-    const DEFAULT: Self;
 }
 
 /// A 2-dimensional vector

@@ -99,9 +99,10 @@ See the [yew-ext module page](https://docs.rs/aframe/*/aframe/yew_ext/index.html
 
 * Event handling
 * State handling
-* Complete components/primitives implementation
+* Complete primitives implementation
 * High-level support for custom geometry
 * Access to Aframe utility functions
+* Some component implementations are still accepting strings where they could accept enums or more specific structures
 
 # Example
 

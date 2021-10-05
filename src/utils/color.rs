@@ -17,7 +17,7 @@ macro_rules! def_color
         }
         impl $name
         {
-            pub fn new($($field: u8),*) -> Self
+            pub const fn new($($field: u8),*) -> Self
             {
                 Self { $($field),* }
             }
@@ -40,6 +40,14 @@ macro_rules! def_color
         }
     }
 }
+impl Rgb
+{
+    pub const fn with_alpha(&self, a: u8) -> Rgba
+    {
+        Rgba::new(self.r, self.g, self.b, a)
+    }
+}
+
 
 def_color!(Rgb r g b);
 def_color!(Rgba r g b a);
