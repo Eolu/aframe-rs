@@ -4,6 +4,61 @@ use std::collections::HashMap;
 use super::*;
 use serde::Serialize;
 
+/// https://aframe.io/docs/1.2.0/primitives/a-box.html
+pub const A_BOX: &'static str = "a-box";
+/// https://aframe.io/docs/1.2.0/primitives/a-camera.html
+pub const A_CAMERA: &'static str = "a-camera";
+/// https://aframe.io/docs/1.2.0/primitives/a-circle.html
+pub const A_CIRCLE: &'static str = "a-circle";
+/// https://aframe.io/docs/1.2.0/primitives/a-cone.html
+pub const A_CONE: &'static str = "a-cone";
+/// https://aframe.io/docs/1.2.0/primitives/a-cursor.html
+pub const A_CURSOR: &'static str = "a-cursor";
+/// https://aframe.io/docs/1.2.0/primitives/a-curvedimage.html
+pub const A_CURVEDIMAGE: &'static str = "a-curvedimage";
+/// https://aframe.io/docs/1.2.0/primitives/a-cylinder.html
+pub const A_CYLINDER: &'static str = "a-cylinder";
+/// https://aframe.io/docs/1.2.0/primitives/a-dodecahedron.html
+pub const A_DODECAHEDRON: &'static str = "a-dodecahedron";
+/// https://aframe.io/docs/1.2.0/primitives/a-gltf-model.html
+pub const A_GLTF_MODEL: &'static str = "a-gltf-model";
+/// https://aframe.io/docs/1.2.0/primitives/a-icosahedron.html
+pub const A_ICOSAHEDRON: &'static str = "a-icosahedron";
+/// https://aframe.io/docs/1.2.0/primitives/a-image.html
+pub const A_IMAGE: &'static str = "a-image";
+/// https://aframe.io/docs/1.2.0/primitives/a-light.html
+pub const A_LIGHT: &'static str = "a-light";
+/// https://aframe.io/docs/1.2.0/primitives/a-link.html
+pub const A_LINK: &'static str = "a-link";
+/// https://aframe.io/docs/1.2.0/primitives/a-obj-model.html
+pub const A_OBJ_MODEL: &'static str = "a-obj-model";
+/// https://aframe.io/docs/1.2.0/primitives/a-octahedron.html
+pub const A_OCTAHEDRON: &'static str = "a-octahedron";
+/// https://aframe.io/docs/1.2.0/primitives/a-plane.html
+pub const A_PLANE: &'static str = "a-plane";
+/// https://aframe.io/docs/1.2.0/primitives/a-ring.html
+pub const A_RING: &'static str = "a-ring";
+/// https://aframe.io/docs/1.2.0/primitives/a-sky.html
+pub const A_SKY: &'static str = "a-sky";
+/// https://aframe.io/docs/1.2.0/primitives/a-sound.html
+pub const A_SOUND: &'static str = "a-sound";
+/// https://aframe.io/docs/1.2.0/primitives/a-sphere.html
+pub const A_SPHERE: &'static str = "a-sphere";
+/// https://aframe.io/docs/1.2.0/primitives/a-tetrahedron.html
+pub const A_TETRAHEDRON: &'static str = "a-tetrahedron";
+/// https://aframe.io/docs/1.2.0/primitives/a-text.html
+pub const A_TEXT: &'static str = "a-text";
+/// https://aframe.io/docs/1.2.0/primitives/a-torus-knot.html
+pub const A_TORUS_KNOT: &'static str = "a-torus-knot";
+/// https://aframe.io/docs/1.2.0/primitives/a-torus.html
+pub const A_TORUS: &'static str = "a-torus";
+/// https://aframe.io/docs/1.2.0/primitives/a-triangle.html
+pub const A_TRIANGLE: &'static str = "a-triangle";
+/// https://aframe.io/docs/1.2.0/primitives/a-video.html
+pub const A_VIDEO: &'static str = "a-video";
+/// https://aframe.io/docs/1.2.0/primitives/a-videosphere.html
+pub const A_VIDEOSPHERE: &'static str = "a-videosphere";
+
 /// Top-level macro to define a new primitive.
 /// ```ignore
 /// let prim = primitive!

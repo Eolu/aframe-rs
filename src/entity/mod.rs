@@ -54,8 +54,8 @@ use crate::{Attribute, ComponentVec, Htmlify, component::Component};
 ///     }),
 ///     children: entity!
 ///     {
-///         primitive: "ramen-cube",
-///         attributes: ("id", "ramen-cube"),
+///         primitive: primitive::A_BOX,
+///         attributes: ("id", "my-box"),
 ///         components:
 ///     }
 /// },
@@ -64,8 +64,9 @@ use crate::{Attribute, ComponentVec, Htmlify, component::Component};
 /// ```ignore
 /// entity!
 /// {
-///     primitive: "ramen-cube",
-///     attributes: ("id", "ramen-cube"),
+///     // This can also jsut a be a string: "a-box" 
+///     primitive: primitive::A_BOX,
+///     attributes: ("id", "my-box"),
 ///     components: 
 /// }
 /// ```
@@ -95,7 +96,7 @@ macro_rules! entity
         )
     };
     ( 
-        primitive: $name:literal,
+        primitive: $name:expr,
         $(attributes: $(($attr_id:literal, $attr_value:expr)),*)? $(,)?
         $(components: $(($cmp_id:literal, $cmp_value:expr)),*)? $(,)? 
         $(children: $($child:expr),*)? 
