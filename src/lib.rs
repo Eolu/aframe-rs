@@ -23,7 +23,7 @@ pub use assets::*;
 pub use crate::yew_ext::*;
 
 /// Async function which initializes aframe by adding the aframe script tag
-/// to the document header and waiting 1 second. 
+/// to the document header and waiting for the script onload event. 
 /// Current Aframe version: 1.2.0
 #[cfg(feature = "init")]
 pub async fn init_aframe() -> Result<(), InitError>
