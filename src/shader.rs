@@ -1,3 +1,5 @@
+//! Module to provide tools for shader registration.
+
 use crate::sys::registerShader;
 use crate::utils::*;
 use std::{borrow::Cow, collections::HashMap};

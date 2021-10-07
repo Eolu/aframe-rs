@@ -1,3 +1,5 @@
+//! Module for the instantiaion of entities and primitives.
+
 pub mod primitive;
 
 use std::borrow::Cow;

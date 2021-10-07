@@ -1,3 +1,5 @@
+//! The scene construct, the top-level container for all other Aframe structures.
+
 use std::borrow::Cow;
 use crate::{ComponentVec, Assets, Attribute, component::Component, entity::*};
 

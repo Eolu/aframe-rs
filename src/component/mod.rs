@@ -1,3 +1,6 @@
+//! Module dealing with components in all forms, including registration,
+//! representation, and instantiation.
+//! 
 //! ## High-level API
 //! [component_def!](`component_def`)    
 //! [component_struct!](`component_struct`)    

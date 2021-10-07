@@ -1,3 +1,6 @@
+//! Module for the registration of primitives and for constants that map to
+//! Aframe's built-in primitives.
+
 use crate::sys::registerPrimitive;
 use std::collections::HashMap;
 

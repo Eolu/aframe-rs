@@ -1,3 +1,5 @@
+//! Module for instantion of assets and mixins.
+
 use std::borrow::Cow;
 use crate::{Attribute, Component, ComponentVec, simple_enum};
 

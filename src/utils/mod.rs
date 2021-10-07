@@ -1,3 +1,5 @@
+//! The `js!` macro, vectors and other useful utility modules.
+
 pub mod color;
 pub mod htmlify;
 
