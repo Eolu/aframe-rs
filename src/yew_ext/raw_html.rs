@@ -23,7 +23,7 @@ impl RawHtml
     {
         html!
         {
-            <RawHtml tag=T::TAG attributes={t.attributes()} html={t.inner_html()} />
+            <RawHtml tag=t.tag() attributes={t.attributes()} html={t.inner_html_as_string()} />
         }
     }
 }

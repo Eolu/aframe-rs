@@ -3,7 +3,7 @@
 pub mod primitive;
 
 use std::borrow::Cow;
-use crate::{Attribute, ComponentVec, Htmlify, component::Component};
+use crate::{Attribute, ComponentVec, component::Component};
 
 /// Defines the high-level API for describing entities, with one form for 
 /// describing general entities and another for defining specific primitives.
@@ -209,7 +209,7 @@ impl Entity
         match self.primitive
         {
             Some(ref tag) => tag.clone(),
-            None => Cow::Borrowed(Self::TAG)
+            None => self.tag().into()
         }
     }
 }

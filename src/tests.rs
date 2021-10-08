@@ -24,6 +24,232 @@ async fn init_aframe_tests()
 }
 
 #[wasm_bindgen_test]
+async fn test_scene_creation() 
+{
+    init_aframe_tests().await;
+
+    const CURSOR_COLOR: [(Cow<'static, str>, Cow<'static, str>); 1] = 
+        [(Cow::Borrowed("color"), Cow::Borrowed("lightblue"))];
+    let scene = scene!
+    {
+        // TODO: Some of these attributes are actually components
+        attributes: ("inspector", "true"), ("embedded", "true"), ("cursor", "rayOrigin: mouse"),
+                    ("mixin", "intersect_ray"), ("crawling-cursor", "target: #mouse-cursor"), 
+                    ("style", "min-height: 50px;"),
+        assets: assets!
+        {
+            mixin!
+            {
+                "intersect_ray", 
+                ("raycaster", component!
+                {
+                    RayCaster,
+                    objects: List(Cow::Borrowed(&[Cow::Borrowed("#ramen-cube, #water")]))
+                })
+            }
+        },
+        children: 
+        // The mouse cursor
+        entity!
+        {
+            // TODO: Make a constant for the fps & text components
+            attributes: ("id", "mouse-cursor"), ("vr-mode-watcher", "true"), 
+                        ("restrict-entity", "states: non-vr"),
+            components: ("geometry", component!
+            {
+                component::Geometry,
+                primitive: component::GeometryPrimitive::Ring
+                {
+                    radius_inner: 0.06,
+                    radius_outer: 0.2,
+                    segments_theta: 32,
+                    segments_phi: 8,
+                    theta_start: 0.0,
+                    theta_length: 360.0
+                }
+            }),
+            ("material", component!
+            {
+                component::Material,
+                props: component::MaterialProps(Cow::Borrowed(&CURSOR_COLOR)),
+                opacity: 0.8
+            })
+        },
+        // The camera rig
+        entity!
+        {
+            attributes: ("id", "rig") /*, ("movement-controls", "true")*/,
+            components: 
+            ("position", component::Position { x: 0.0, y: 0.0, z: 0.0  }),
+            ("geometry", component!
+            {
+                component::Geometry,
+                primitive: component::GeometryPrimitive::Ring
+                {
+                    radius_inner: 0.06,
+                    radius_outer: 0.2,
+                    segments_theta: 32,
+                    segments_phi: 8,
+                    theta_start: 0.0,
+                    theta_length: 360.0
+                }
+            }),
+            ("material", component!
+            {
+                component::Material,
+                props: component::MaterialProps(Cow::Borrowed(&CURSOR_COLOR)),
+                opacity: 0.8
+            }),
+            children: 
+                // The camera
+                entity!
+                {
+                    attributes: ("id", "camera"), 
+                    components: 
+                        ("position", component::Position { x: 0.0, y: 1.8, z: 0.0  }),
+                        ("camera", component!(component::Camera)),
+                        ("look-controls", component!(component::LookControls))
+                }, 
+                
+                // Hands
+                entity!
+                {
+                    // TODO: Some fancier way to add/build mixins
+                    // TODO: Make a constant for all these components
+                    attributes: ("id", "left-controller"), ("mixin", "intersect_ray"), ("vr-mode-watcher", "true"),
+                                ("restrict-entity", "states: vr"), ("laser-controls", "hand: left"), 
+                                ("crawling-cursor", "target: #vr-cursor"), ("line", "color: red; opacity: 0.75")
+                }, 
+                entity!
+                {
+                    // TODO: Some fancier way to add/build mixins
+                    // TODO: Make a constant for all these components
+                    attributes: ("id", "right-controller"), ("mixin", "intersect_ray"), ("vr-mode-watcher", "true"),
+                                ("restrict-entity", "states: vr"), ("laser-controls", "hand: right"), 
+                                ("crawling-cursor", "target: #vr-cursor"), ("line", "color: red; opacity: 0.75")
+                }, 
+
+                // The vr cursor
+                entity!
+                {
+                    // TODO: Make a constant for vr-mode-watcher & restrict-entity
+                    attributes: ("id", "vr-cursor"), ("vr-mode-watcher", "true"), ("restrict-entity", "states: vr"),
+                    components: ("geometry", component!
+                    {
+                        component::Geometry,
+                        primitive: component::GeometryPrimitive::Ring
+                        {
+                            radius_inner: 0.06,
+                            radius_outer: 0.2,
+                            segments_theta: 32,
+                            segments_phi: 8,
+                            theta_start: 0.0,
+                            theta_length: 360.0
+                        }
+                    }),
+                    ("material", component!
+                    {
+                        component::Material,
+                        props: component::MaterialProps(Cow::Borrowed(&CURSOR_COLOR)),
+                        opacity: 0.7
+                    })
+                }
+        },
+        entity!
+        {
+            attributes: ("id", "cube-rig"),
+            components: 
+            ("position", component::Position{x: 0.0, y: 2.5, z: -2.0}),
+            ("light", component!
+            {
+                component::Light,
+                light_type: component::LightType::Point
+                {
+                    decay: 1.0,
+                    distance: 50.0,
+                    shadow: component::OptionalLocalShadow::NoCast{},
+                }, 
+                intensity: 0.0
+            }),
+            ("animation__mouseenter", component!
+            {
+                component::Animation,
+                property: Cow::Borrowed("light.intensity"),
+                to: Cow::Borrowed("1.0"),
+                start_events: component::List(Cow::Borrowed(&[Cow::Borrowed("mouseenter")])),
+                dur: 250
+            }),
+            ("animation__mouseleave", component!
+            {
+                component::Animation,
+                property: Cow::Borrowed("light.intensity"),
+                to: Cow::Borrowed("0.0"),
+                start_events: component::List(Cow::Borrowed(&[Cow::Borrowed("mouseleave")])),
+                dur: 250
+            }),
+            children: entity!
+            {
+                primitive: "ramen-cube",
+                attributes: ("id", "ramen-cube"),
+                components: 
+                    ("position", component::Position{ x: 0.0, y: -2.0, z: -1.0 }),
+                    ("rotation", component::Rotation { x: 0.0, y: 45.0, z: 0.0  }),
+                    ("geometry", component!(component::Geometry)),
+                    ("animation__click", component!
+                    { 
+                        component::Animation,
+                        property: Cow::Borrowed("rotation"),
+                        from: Cow::Borrowed("0 45 0"),
+                        to: Cow::Borrowed("0 405 0"),
+                        start_events: component::List(Cow::Borrowed(&[Cow::Borrowed("click")])),
+                        dur: 900,
+                        easing: component::Easing::EaseOutCubic
+                    }),
+                    ("shadow", component!(component::Shadow))
+            }
+        },
+        // Ambient light
+        entity!
+        {
+            attributes: ("id", "ambient-light"),
+            components: ("light", component!
+            {
+                component::Light,
+                light_type: component::LightType::Ambient{},
+                color: color::GREY73,
+                intensity: 0.2
+            })
+        },
+        // Directional light
+        entity!
+        {
+            attributes: ("id", "directional-light"),
+            components: 
+            ("position", component::Position{ x: 0.5, y: 1.0, z: 1.0 }),
+            ("light", component!
+            {
+                component::Light,
+                light_type: component::LightType::Directional
+                {
+                    shadow: component::OptionalDirectionalShadow::Cast
+                    {
+                        shadow: component!
+                        {
+                            component::DirectionalShadow
+                        }
+                    }
+                },
+                color: color::WHITE,
+                intensity: 0.1
+            })
+        }
+    };
+
+    let body = web_sys::window().and_then(|win| win.document()).unwrap().body().unwrap();
+    body.append_with_node_1(scene.as_element().unwrap().as_ref()).unwrap();
+}
+
+#[wasm_bindgen_test]
 async fn test_register_component() 
 {
     init_aframe_tests().await;

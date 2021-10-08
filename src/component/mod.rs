@@ -668,8 +668,8 @@ component_struct!
 );
 component_struct!
 {
-    /// [raycaster](https://aframe.io/docs/1.2.0/components/raycaster.html)
-    RayCaster,
+    /// [renderer](https://aframe.io/docs/1.2.0/components/renderer.html)
+    Renderer,
     antialias: "antialias" Antialias = Antialias::Auto,
     color_management: "colorManagement" bool = false,
     high_refresh_rate: "highRefreshRate" bool = false,
@@ -708,8 +708,8 @@ simple_enum!
 }
 component_struct!
 {
-    /// [renderer](https://aframe.io/docs/1.2.0/components/renderer.html)
-    Renderer,
+    /// [raycaster](https://aframe.io/docs/1.2.0/components/raycaster.html)
+    RayCaster,
     auto_refresh: "autoRefresh" bool = true,
     direction: "direction" Vector3 = Vector3 { x: 0.0, y: 0.0, z: -1.0 },
     enabled: "enabled" bool = true,
