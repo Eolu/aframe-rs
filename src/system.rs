@@ -19,7 +19,7 @@ use wasm_bindgen::{JsCast, prelude::*};
 /// | pause | JsValue created from a js_sys::Function() | Called when the entity or scene pauses |
 /// | play | JsValue created from a js_sys::Function() | Called when the entity or scene resumes |
 /// | tick | JsValue created from a js_sys::Function(time, timeDelta) | Called on each tick or frame of the scene’s render loop |
-/// | ... | JsValue created from a js_sys::Function(time, timeDelta) | Additional functions with any name may be specified |
+/// | properties | name: JsValue, ... | Additional comma-separated functions or data with any valid name may be specified |
 ///
 /// All parameteres are optional, although the order must be exactly as shown. 
 /// `schema` should be a HashMap with string keys and `AframeProperty` 
