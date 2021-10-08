@@ -94,6 +94,9 @@ let body = web_sys::window()?.document()?.body()?;
 body.append_with_node_1(scene.as_element()?.as_ref())?;
 ```
 
+Here's a basic example of a fully-functional page being created using `wasm-bindgen-test`:
+[test example](https://github.com/Eolu/aframe-rs/blob/80558fa699178724cbd93657207db994630b55f1/src/tests.rs#L27)    
+
 ## Sys API    
 
 The lowest-level calls to Aframe are defined in the `sys` module:    
