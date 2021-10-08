@@ -36,6 +36,19 @@ extern
     /// [aframe_properties_registerelement](https://aframe.io/docs/1.2.0/core/globals.html#aframe_properties_registerelement)
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerElement(name: &str, data: JsValue);
+
+    // /// Checks if a VR headset is connected by looking for orientation data.
+    // #[wasm_bindgen(js_namespace = ["AFRAME", "utils", "device"])]
+    // pub fn checkHeadsetConnected() -> bool;
+    // /// Checks if device is Gear VR.
+    // #[wasm_bindgen(js_namespace = ["AFRAME", "utils", "device"])]
+    // pub fn isGearVR() -> bool;
+    // /// Checks if device is Oculus Go.
+    // #[wasm_bindgen(js_namespace = ["AFRAME", "utils", "device"])]
+    // pub fn isOculusGo() -> bool;
+    // /// Checks if device is a smartphone.
+    // #[wasm_bindgen(js_namespace = ["AFRAME", "utils", "device"])]
+    // pub fn isMobile() -> bool;
 }
 
 /// Access a field from an object
@@ -102,6 +115,23 @@ pub fn systems() -> Option<JsValue>
 pub fn version() -> Option<JsValue>
 {
     AFRAME.as_ref().and_then(|aframe| access_field(&aframe.0, "version"))
+}
+
+pub fn utils() -> Option<JsValue>
+{
+    AFRAME.as_ref()
+        .and_then(|aframe| access_field(&aframe.0, "utils"))
+        .and_then(|utils| utils.unchecked_into::<Array>().iter().skip(1).next())
+}
+
+pub fn device() -> Option<JsValue>
+{
+    utils()
+        .and_then(|utils| 
+        {
+            access_field(utils.unchecked_ref(), "device")
+                .and_then(|utils| utils.unchecked_into::<Array>().iter().skip(1).next())
+        })
 }
 
 struct Aframe(Object);

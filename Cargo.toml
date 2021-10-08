@@ -19,7 +19,7 @@ crate-type = ["rlib", "cdylib"]
 
 [features]
 init = ["async-lock", "futures"]
-yew-support = ["yew", "web-sys"]
+yew-support = ["yew"]
 
 [dependencies]
 const-default = "0.2"
@@ -33,7 +33,7 @@ async-lock = { version = "2.4", optional = true }
 futures = { version = "0.3", optional = true }
 # yew-support dependencies
 yew = { version = "0.18", optional = true }
-web-sys = { version = "0.3", optional = true }
+web-sys = { version = "0.3", features = ["Window"] }
 
 [dev-dependencies]
 aframe = { path = ".", features = ["init", "yew-support"] }

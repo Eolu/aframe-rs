@@ -115,27 +115,22 @@ async fn test_globals_access()
 {
     init_aframe_tests().await;
 
-    let three_js = sys::three_js().expect("THREE global access failed!");
-    console_log!("THREE global: {:?}", three_js);
-    
+    console_log!("THREE global: {:?}", sys::three_js().expect("THREE global access failed!"));
     let _components = sys::components().expect("components access failed!");
     // console_log!("registered components: {:?}", components);
-
     let _geometries = sys::geometries().expect("geometries access failed!");
     // console_log!("registered geometries: {:?}", geometries);
-
-    let primitives = sys::primitives().expect("primitives access failed!");
-    console_log!("registered primitives: {:?}", primitives);
-
+    console_log!("registered primitives: {:?}", sys::primitives().expect("primitives access failed!"));
     let _shaders = sys::shaders().expect("shaders access failed!");
     // console_log!("registered shaders: {:?}", shaders);
-
-    let systems = sys::systems().expect("systems access failed!");
-    console_log!("registered systems: {:?}", systems);
-
-    let version = sys::version().expect("version access failed!");
-    console_log!("Aframe version: {:?}", version);
-
+    console_log!("registered systems: {:?}", sys::systems().expect("systems access failed!"));
+    console_log!("utils: {:?}", sys::utils().expect("utils access failed!"));
+    console_log!("device: {:?}", sys::device().expect("device access failed!"));
+    // console_log!("check_headset_connected: {:?}", sys::checkHeadsetConnected());
+    // console_log!("is_gear_vr: {}", sys::isGearVR());
+    // console_log!("is_oculus_go: {:?}", sys::isOculusGo());
+    // console_log!("is_mobile: {:?}", sys::isMobile());
+    console_log!("Aframe version: {:?}", sys::version().expect("version access failed!"));
     console_log!("Globals access test complete.");
 }
 
