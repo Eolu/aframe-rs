@@ -244,7 +244,7 @@ impl From<&Mixin> for Vec<Attribute>
     fn from(mixin: &Mixin) -> Self 
     {
         std::iter::once(Attribute::new("id", mixin.id.clone()))
-            .chain(mixin.components.iter().map(|c| c.into()))
+            .chain(mixin.components.iter().map(crate::component::cmp_to_attr))
             .collect()
     }
 }

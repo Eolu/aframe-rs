@@ -7,7 +7,7 @@ use crate::{Htmlify, Attribute};
 #[derive(Debug, Clone, Eq, PartialEq, Properties)]
 pub struct Props
 {
-    pub tag: &'static str,
+    pub tag: String,
     pub attributes: Vec<Attribute>,
     pub html: Cow<'static, str>
 }
@@ -23,7 +23,7 @@ impl RawHtml
     {
         html!
         {
-            <RawHtml tag=t.tag() attributes={t.attributes()} html={t.inner_html_as_string()} />
+            <RawHtml tag=t.tag().to_string() attributes={t.attributes()} html={t.inner_html_as_string()} />
         }
     }
 }
@@ -60,7 +60,7 @@ impl Component for RawHtml
     {
         VNode::VRef(Node::from
         ({
-            let element = web_sys::window().unwrap().document().unwrap().create_element(self.props.tag).unwrap();
+            let element = web_sys::window().unwrap().document().unwrap().create_element(&self.props.tag).unwrap();
             for attr in self.props.attributes.iter()
             {
                 element.set_attribute(&attr.name, &attr.value).unwrap();

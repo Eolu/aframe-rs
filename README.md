@@ -81,9 +81,9 @@ The `assets!` and `mixin!` macros are provided to define an `Assets` struct.
 
 ## Htmlify    
 
-The `Htmlify` trait is is to generate HTML from the structures provided in this crate. This may eventually be abstracted into a separate crate. (TBD: Is there a better crate in existence already?). This trait can generate `web_sys::Element` and other javascript-wrapped types, or raw HTML as a string.    
+The `Htmlify` trait is is to generate HTML from the structures provided in this crate. This was abstracted into a separate crate:
     
-[Htmlify](https://docs.rs/aframe/*/aframe/utils/htmlify/trait.Htmlify.html)    
+[Htmlify](https://docs.rs/htmlify/*/htmlify/)    
 
 You can use this to plop a Scene directly into your DOM with the web_sys crate, 
 making this crate usable even without any supporting framework:
@@ -92,6 +92,9 @@ making this crate usable even without any supporting framework:
 // Say we have some `Scene` structure already constructed:
 let body = web_sys::window()?.document()?.body()?;
 body.append_with_node_1(scene.as_element()?.as_ref())?;
+
+// Or even simpler:
+htmlify::append_to_document_body(&scene);
 ```
 
 Here's a basic example of a fully-functional page being created using `wasm-bindgen-test`:

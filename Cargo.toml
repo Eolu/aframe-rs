@@ -1,6 +1,6 @@
 [package]
 name = "aframe"
-version = "0.4.0"
+version = "0.5.0"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 authors = ["Griffin O'Neill <gsoneill1003@gmail.com>"]
@@ -22,6 +22,7 @@ init = ["async-lock", "futures"]
 yew-support = ["yew"]
 
 [dependencies]
+htmlify = "1.0"
 const-default = "0.2"
 once_cell = "1.8"
 serde = { version = "1.0", features = ["derive"] }

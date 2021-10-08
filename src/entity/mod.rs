@@ -213,15 +213,3 @@ impl Entity
         }
     }
 }
-
-impl From<&(Cow<'static, str>, Box<dyn Component>)> for Attribute
-{
-    fn from((name, cmp): &(Cow<'static, str>, Box<dyn Component>)) -> Self 
-    {
-        Attribute 
-        { 
-            name: name.to_owned(), 
-            value: format!("{}", cmp).into() 
-        }
-    }
-}

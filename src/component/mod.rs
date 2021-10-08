@@ -45,6 +45,16 @@ use crate::component_struct;
 use crate::simple_enum;
 use crate::complex_enum;
 
+/// Convert a component to an attribute
+pub fn cmp_to_attr((name, cmp): &(Cow<'static, str>, Box<dyn Component>)) -> Attribute 
+{
+    Attribute 
+    { 
+        name: name.to_owned(), 
+        value: format!("{}", cmp).into() 
+    }
+}
+
 component_struct!
 (
     /// [animation](https://aframe.io/docs/1.2.0/components/animation.html)

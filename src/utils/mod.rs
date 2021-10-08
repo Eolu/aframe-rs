@@ -3,7 +3,7 @@
 pub mod color;
 pub mod htmlify;
 
-pub use htmlify::*;
+pub use ::htmlify::*;
 pub use const_default::ConstDefault;
 use js_sys::{Object, Reflect};
 use wasm_bindgen::{JsCast, JsValue};
