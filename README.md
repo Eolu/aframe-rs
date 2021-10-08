@@ -106,7 +106,10 @@ The lowest-level calls to Aframe are defined in the `sys` module:
 
 [registerPrimitive](https://docs.rs/aframe/*/aframe/sys/fn.registerPrimitive.html)    
 [registerComponent](https://docs.rs/aframe/*/aframe/sys/fn.registerComponent.html)    
+[registerSystem](https://docs.rs/aframe/*/aframe/sys/fn.registerSystem.html)    
 [registerShader](https://docs.rs/aframe/*/aframe/sys/fn.registerShader.html)    
+[registerGeometry](https://docs.rs/aframe/*/aframe/sys/fn.registerGeometry.html)    
+[registerElement](https://docs.rs/aframe/*/aframe/sys/fn.registerElement.html)    
 
 ## yew_support feature
 
