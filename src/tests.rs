@@ -29,7 +29,7 @@ async fn test_register_component()
     init_aframe_tests().await;
 
     let mut schema = HashMap::new();
-    schema.insert("updateFreq", ComponentProperty::number(Some(500.0)));
+    schema.insert("updateFreq", AframeProperty::number(Some(500.0)));
 
     let fps = component_def!
     {
@@ -75,6 +75,68 @@ async fn test_register_geometry()
         newbox.register("newbox");
     }
     console_log!("Registered newbox geometry.");
+}
+
+#[wasm_bindgen_test]
+async fn test_register_system() 
+{
+    init_aframe_tests().await;
+
+    let mut schema = HashMap::new();
+    schema.insert("some_float", AframeProperty::number(None));
+    schema.insert("some_text", AframeProperty::string(Some(Cow::Borrowed("init"))));
+
+    let my_sys = system_def!
+    {
+        schema: schema,
+        init: js!
+        (
+            this.data.some_float = 1.0; 
+            this.data.some_text = "I'm a bit of text";
+        ),
+        pause: js!(this.data.some_text = "paused!";),
+        play: js!(this.data.some_text = "playing!";),
+        tick: js!
+        (time, delta =>>
+            this.data.some_float = this.data.some_float + 1.0;
+        ),
+        properties:
+            reset_me: js!(this.data.some_float = 0.0;)
+    };
+    unsafe 
+    {
+        my_sys.register("my-sys");
+    }
+    console_log!("Registered my-sys system.");
+}
+
+#[wasm_bindgen_test]
+async fn test_globals_access() 
+{
+    init_aframe_tests().await;
+
+    let three_js = sys::three_js().expect("THREE global access failed!");
+    console_log!("THREE global: {:?}", three_js);
+    
+    let _components = sys::components().expect("components access failed!");
+    // console_log!("registered components: {:?}", components);
+
+    let _geometries = sys::geometries().expect("geometries access failed!");
+    // console_log!("registered geometries: {:?}", geometries);
+
+    let primitives = sys::primitives().expect("primitives access failed!");
+    console_log!("registered primitives: {:?}", primitives);
+
+    let _shaders = sys::shaders().expect("shaders access failed!");
+    // console_log!("registered shaders: {:?}", shaders);
+
+    let systems = sys::systems().expect("systems access failed!");
+    console_log!("registered systems: {:?}", systems);
+
+    let version = sys::version().expect("version access failed!");
+    console_log!("Aframe version: {:?}", version);
+
+    console_log!("Globals access test complete.");
 }
 
 #[test]

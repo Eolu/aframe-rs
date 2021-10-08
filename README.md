@@ -71,6 +71,10 @@ The `assets!` and `mixin!` macros are provided to define an `Assets` struct.
 [assets!](https://docs.rs/aframe/*/aframe/macro.assets.html)    
 [mixin!](https://docs.rs/aframe/*/aframe/macro.mixin.html)    
 
+## Systems
+
+[system_def!](https://docs.rs/aframe/*/aframe/macro.system_def.html)    
+
 ## Shaders    
 
 [Shader](https://docs.rs/aframe/*/aframe/shader/struct.Shader.html)   

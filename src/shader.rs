@@ -1,4 +1,11 @@
-//! Module to provide tools for shader registration.
+//! Module to provide tools for shader registration as well as built-in shader 
+//! constants.
+
+pub const PORTAL: &'static str = "portal";
+pub const FLAT: &'static str = "flat";
+pub const STANDARD: &'static str = "standard";
+pub const SDF: &'static str = "sdf";
+pub const MSDF: &'static str = "msdf";
 
 use crate::sys::registerShader;
 use crate::utils::*;

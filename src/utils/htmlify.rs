@@ -1,3 +1,6 @@
+//! Module that defines the Htmlify trait and implements it for items in this
+//! crate.
+
 use std::{borrow::Cow, fmt::Display};
 
 use crate::{Asset, AssetItem, Assets, Audio, Entity, Image, Mixin, Scene, Video};

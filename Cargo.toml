@@ -1,6 +1,6 @@
 [package]
 name = "aframe"
-version = "0.2.10"
+version = "0.3.0"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 authors = ["Griffin O'Neill <gsoneill1003@gmail.com>"]
@@ -18,19 +18,22 @@ documentation = "https://docs.rs/aframe"
 crate-type = ["rlib", "cdylib"]
 
 [features]
-yew-support = ["yew", "web-sys"]
 init = ["async-lock", "futures"]
+yew-support = ["yew", "web-sys"]
 
 [dependencies]
 const-default = "0.2"
+once_cell = "1.8"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 wasm-bindgen = {version = "0.2", features = ["serde-serialize"]}
 js-sys = "0.3"
-yew = { version = "0.18", optional = true }
-web-sys = { version = "0.3", optional = true }
+# init dependencies
 async-lock = { version = "2.4", optional = true }
 futures = { version = "0.3", optional = true }
+# yew-support dependencies
+yew = { version = "0.18", optional = true }
+web-sys = { version = "0.3", optional = true }
 
 [dev-dependencies]
 aframe = { path = ".", features = ["init", "yew-support"] }
