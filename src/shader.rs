@@ -11,7 +11,6 @@ use crate::sys::registerShader;
 use crate::utils::*;
 use std::{borrow::Cow, collections::HashMap};
 use serde::{Serialize, Serializer};
-use wasm_bindgen::prelude::*;
 
 /// Provides all the tools necessary to define an Aframe shader. 
 /// The [maplit](https://docs.rs/maplit/1.0.2/maplit/) crate is recommended 
@@ -63,9 +62,9 @@ impl<'a, 'b, 'c> Shader<'a, 'b, 'c>
     }
 
     /// Register a shader in aframe. Warning: Aframe must be initialized before this is called.
-    pub unsafe fn register(&self, name: &str) -> Result<(), serde_json::error::Error>
+    pub unsafe fn register(&self, name: &str) -> Result<(), serde_wasm_bindgen::Error>
     {
-        registerShader(name, JsValue::from_serde(self)?);
+        registerShader(name, serde_wasm_bindgen::to_value(self)?);
         Ok(())
     }
 }

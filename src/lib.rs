@@ -22,7 +22,6 @@ pub use scene::*;
 pub use assets::*;
 pub use system::*;
 #[cfg(feature = "yew-support")]
-pub use crate::yew_ext::*;
 
 /// Async function which initializes aframe by adding the aframe script tag
 /// to the document header and waiting for the script onload event. 
@@ -33,7 +32,6 @@ pub async fn init_aframe() -> Result<(), InitError>
     const LINK: &'static str = "https://aframe.io/releases/1.2.0/aframe.min.js";
     
     use wasm_bindgen::prelude::*;
-    use wasm_bindgen::JsCast;
     use std::sync::{Arc, Mutex};
     use async_lock::Barrier;
     use futures::executor::block_on;

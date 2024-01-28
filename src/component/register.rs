@@ -201,7 +201,7 @@ impl From<&ComponentReg> for JsValue
 {
     fn from(cmr: &ComponentReg) -> Self 
     {
-        let js_value = JsValue::from_serde(cmr).expect("Failed to convert ComponentReg into JsObject");
+        let js_value = serde_wasm_bindgen::to_value(cmr).expect("Failed to convert ComponentReg into JsObject");
         define_property(js_value.unchecked_ref(), "init", (cmr.init).unchecked_ref());
         define_property(js_value.unchecked_ref(), "update", (cmr.update).unchecked_ref());
         define_property(js_value.unchecked_ref(), "tick", (cmr.tick).unchecked_ref());
@@ -244,7 +244,7 @@ impl From<&GeometryReg> for JsValue
 {
     fn from(cmr: &GeometryReg) -> Self 
     {
-        let js_value = JsValue::from_serde(cmr).expect("Failed to convert GeometryReg into JsObject");
+        let js_value: JsValue = serde_wasm_bindgen::to_value(cmr).expect("Failed to convert GeometryReg into JsObject");
         define_property(js_value.unchecked_ref(), "init", (cmr.init).unchecked_ref());
         js_value
     }

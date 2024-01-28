@@ -143,9 +143,9 @@ impl PrimitiveReg
     }
 
     /// Register a primitive in aframe. Warning: Aframe must be initialized before this is called.
-    pub unsafe fn register(&self, name: &str) -> Result<(), serde_json::error::Error>
+    pub unsafe fn register(&self, name: &str) -> Result<(), serde_wasm_bindgen::Error>
     {
-        registerPrimitive(name, wasm_bindgen::JsValue::from_serde(self)?);
+        registerPrimitive(name, serde_wasm_bindgen::to_value(self)?);
         Ok(())
     }
 }

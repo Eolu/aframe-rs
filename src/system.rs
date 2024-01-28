@@ -118,7 +118,7 @@ impl From<&SystemReg> for JsValue
 {
     fn from(sysr: &SystemReg) -> Self 
     {
-        let js_value = JsValue::from_serde(sysr).expect("Failed to convert SystemReg into JsObject");
+        let js_value = serde_wasm_bindgen::to_value(sysr).expect("Failed to convert SystemReg into JsObject");
         define_property(js_value.unchecked_ref(), "init", (sysr.init).unchecked_ref());
         define_property(js_value.unchecked_ref(), "pause", (sysr.pause).unchecked_ref());
         define_property(js_value.unchecked_ref(), "play", (sysr.play).unchecked_ref());
