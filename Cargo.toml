@@ -1,6 +1,6 @@
 [package]
 name = "aframe"
-version = "0.5.3"
+version = "0.6.0"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 authors = ["Griffin O'Neill <gsoneill1003@gmail.com>"]
@@ -34,7 +34,7 @@ web-sys = { version = "0.3", features = ["Window", "Document", "Element"] }
 async-lock = { version = "2.4", optional = true }
 futures = { version = "0.3", optional = true }
 # yew-support dependencies
-yew = { version = "0.18", optional = true }
+yew = { version = "0.21", optional = true }
 
 [dev-dependencies]
 aframe = { path = ".", features = ["init", "yew-support"] }
