@@ -35,7 +35,7 @@ async-lock = { version = "2.4", optional = true }
 futures = { version = "0.3", optional = true }
 # yew-support dependencies
 yew = { version = "0.21", optional = true }
-serde-wasm-bindgen = "0.6.3"
+serde-wasm-bindgen = "0.6.5"
 
 [dev-dependencies]
 aframe = { path = ".", features = ["init", "yew-support"] }
