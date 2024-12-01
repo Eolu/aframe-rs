@@ -232,7 +232,7 @@ impl Audio
     }
 }
 
-/// [mixins](https://aframe.io/docs/1.2.0/core/mixins.html)
+/// [mixins](https://aframe.io/docs/1.6.0/core/mixins.html)
 #[derive(Debug, Clone, PartialEq)]
 pub struct Mixin
 {

@@ -25,11 +25,11 @@ pub use system::*;
 
 /// Async function which initializes aframe by adding the aframe script tag
 /// to the document header and waiting for the script onload event. 
-/// Current Aframe version: 1.2.0
+/// Current Aframe version: 1.6.0
 #[cfg(feature = "init")]
 pub async fn init_aframe() -> Result<(), InitError>
 {
-    const LINK: &'static str = "https://aframe.io/releases/1.2.0/aframe.min.js";
+    const LINK: &'static str = "https://aframe.io/releases/1.6.0/aframe.min.js";
     
     use wasm_bindgen::prelude::*;
     use std::sync::{Arc, Mutex};

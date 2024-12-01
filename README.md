@@ -21,7 +21,7 @@ async fn app_main() -> Result<(), aframe::InitError>
 You can also initialize simply by adding the Aframe script to your HTML header:
 
 ```html
-<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 ```
 
 ### Use

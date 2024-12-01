@@ -57,7 +57,7 @@ pub fn cmp_to_attr((name, cmp): &(Cow<'static, str>, Box<dyn Component>)) -> Att
 
 component_struct!
 (
-    /// [animation](https://aframe.io/docs/1.2.0/components/animation.html)
+    /// [animation](https://aframe.io/docs/1.6.0/components/animation.html)
     Animation,
     property: "property" Cow<'static, str> = Cow::Borrowed(""),
     is_raw_property: "isRawProperty" bool = false,
@@ -78,14 +78,14 @@ component_struct!
 );
 complex_enum!
 (
-    /// [animation#loop](https://aframe.io/docs/1.2.0/components/animation.html#api_loop)
+    /// [animation#loop](https://aframe.io/docs/1.6.0/components/animation.html#api_loop)
     AnimationLoop, 
     Amount "{}" => { looping: u32 },
     Forever "true" => {}
 );
 simple_enum!
 (
-    /// [animation#autoplay](https://aframe.io/docs/1.2.0/components/animation.html#api_autoplay)
+    /// [animation#autoplay](https://aframe.io/docs/1.6.0/components/animation.html#api_autoplay)
     Autoplay, 
     Null => "null", 
     True => "true", 
@@ -93,7 +93,7 @@ simple_enum!
 );
 simple_enum!
 (
-    /// [animation#dir](https://aframe.io/docs/1.2.0/components/animation.html#api_dir)
+    /// [animation#dir](https://aframe.io/docs/1.6.0/components/animation.html#api_dir)
     AnimationDirection, 
     Normal => "normal", 
     Reverse => "reverse", 
@@ -101,7 +101,7 @@ simple_enum!
 );
 simple_enum!
 (
-    /// [animation#easings](https://aframe.io/docs/1.2.0/components/animation.html#easings)
+    /// [animation#easings](https://aframe.io/docs/1.6.0/components/animation.html#easings)
     Easing, 
     EaseInQuad => "easeInQuad",
     EaseInCubic => "easeInCubic",
@@ -134,14 +134,14 @@ simple_enum!
 );
 component_struct!
 (
-    /// [background](https://aframe.io/docs/1.2.0/components/background.html)
+    /// [background](https://aframe.io/docs/1.6.0/components/background.html)
     Background, 
     color: "color" color::Rgb = color::BLACK,
     transparent: "transparent" bool = false
 );
 component_struct!
 {
-    /// [camera](https://aframe.io/docs/1.2.0/components/camera.html)
+    /// [camera](https://aframe.io/docs/1.6.0/components/camera.html)
     Camera,
     active: "active" bool = true,
     far: "far" u32 = 10000,
@@ -152,7 +152,7 @@ component_struct!
 }
 component_struct!
 (
-    /// [cursor](https://aframe.io/docs/1.2.0/components/cursor.html)
+    /// [cursor](https://aframe.io/docs/1.6.0/components/cursor.html)
     Cursor, 
     // TODO: True event handling
     down_events: "downEvents" List<Cow<'static, str>> = List::DEFAULT,
@@ -171,7 +171,7 @@ simple_enum!
 }
 component_struct!
 (
-    /// [daydream-controls](https://aframe.io/docs/1.2.0/components/daydream-controls.html)
+    /// [daydream-controls](https://aframe.io/docs/1.6.0/components/daydream-controls.html)
     DaydreamControls, 
     arm_model: "armModel" bool = true,
     botton_color: "bottonColor" color::Rgb = color::BLACK,
@@ -191,7 +191,7 @@ simple_enum!
 }
 component_struct!
 (
-    /// [device-orientation-permission-ui](https://aframe.io/docs/1.2.0/components/device-orientation-permission-ui.html)
+    /// [device-orientation-permission-ui](https://aframe.io/docs/1.6.0/components/device-orientation-permission-ui.html)
     DeviceOrientationPermissionUI, 
     enabled: "enabled" bool = true,
     deny_button_text: "denyButtonText" Cow<'static, str> = Cow::Borrowed("Deny"),
@@ -203,12 +203,12 @@ component_struct!
 );
 component_struct!
 (
-    /// [embedded](https://aframe.io/docs/1.2.0/components/embedded.html)
+    /// [embedded](https://aframe.io/docs/1.6.0/components/embedded.html)
     Embedded
 );
 component_struct!
 (
-    /// [fog](https://aframe.io/docs/1.2.0/components/fog.html)
+    /// [fog](https://aframe.io/docs/1.6.0/components/fog.html)
     Fog, 
     fog_type: "" FogType = FogType::Linear { near: 1, far: 1000 },
     color: "color" color::Rgb = color::BLACK
@@ -222,7 +222,7 @@ complex_enum!
 }
 component_struct!
 (
-    /// [gearvr-controls](https://aframe.io/docs/1.2.0/components/gearvr-controls.html)
+    /// [gearvr-controls](https://aframe.io/docs/1.6.0/components/gearvr-controls.html)
     GearVRControls, 
     arm_model: "armModel" bool = true,
     button_color: "buttonColor" color::Rgb = color::BLACK,
@@ -234,7 +234,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [geometry](https://aframe.io/docs/1.2.0/components/geometry.html)
+    /// [geometry](https://aframe.io/docs/1.6.0/components/geometry.html)
     Geometry,
     primitive: "" GeometryPrimitive = GeometryPrimitive::Box
     {
@@ -249,7 +249,7 @@ component_struct!
 );
 complex_enum!
 (
-    /// [geometry#built-in-geometries](https://aframe.io/docs/1.2.0/components/geometry.html#built-in-geometries)
+    /// [geometry#built-in-geometries](https://aframe.io/docs/1.6.0/components/geometry.html#built-in-geometries)
     GeometryPrimitive, 
     Box
     "primitive: box; width: {}; height: {}; depth: {}; segmentsWidth: {}; \
@@ -376,13 +376,13 @@ complex_enum!
 );
 component_struct!
 (
-    /// [gltf-model](https://aframe.io/docs/1.2.0/components/gltf-model.html)
+    /// [gltf-model](https://aframe.io/docs/1.6.0/components/gltf-model.html)
     GltfModel, 
     string: "" Cow<'static, str> = Cow::Borrowed("")
 );
 component_struct!
 (
-    /// [hand-controls](https://aframe.io/docs/1.2.0/components/hand-controls.html)
+    /// [hand-controls](https://aframe.io/docs/1.6.0/components/hand-controls.html)
     HandControls, 
     color: "color" color::Rgb = color::WHITE,
     hand: "hand" Hand = Hand::Left,
@@ -398,7 +398,7 @@ simple_enum!
 }
 component_struct!
 (
-    /// [hand-controls](https://aframe.io/docs/1.2.0/components/hand-controls.html)
+    /// [hand-controls](https://aframe.io/docs/1.6.0/components/hand-controls.html)
     HandTrackingControls, 
     hand: "hand" Hand = Hand::Left,
     model_color: "modelColor" color::Rgb = color::WHITE,
@@ -413,13 +413,13 @@ simple_enum!
 }
 component_struct!
 (
-    /// [laser-controls](https://aframe.io/docs/1.2.0/components/laser-controls.html)
+    /// [laser-controls](https://aframe.io/docs/1.6.0/components/laser-controls.html)
     LaserControls, 
     enter_vr: "enterVR" bool = true
 );
 component_struct!
 (
-    /// [keyboard-shortcuts](https://aframe.io/docs/1.2.0/components/keyboard-shortcuts.html)
+    /// [keyboard-shortcuts](https://aframe.io/docs/1.6.0/components/keyboard-shortcuts.html)
     KeyboardShortcuts, 
     hand: "hand" Hand = Hand::Left,
     model: "model" bool = true,
@@ -427,7 +427,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [layer](https://aframe.io/docs/1.2.0/components/layer.html)
+    /// [layer](https://aframe.io/docs/1.6.0/components/layer.html)
     Layer, 
     layer_type: "type" LayerType = LayerType::Quad,
     src: "src" Cow<'static, str> = Cow::Borrowed(""),
@@ -443,7 +443,7 @@ simple_enum!
 }
 component_struct!
 (
-    /// [light](https://aframe.io/docs/1.2.0/components/light.html)
+    /// [light](https://aframe.io/docs/1.6.0/components/light.html)
     Light, 
     light_type: "" LightType = LightType::Directional { shadow: OptionalDirectionalShadow::NoCast{} },
     color: "color" color::Rgb = color::WHITE,
@@ -451,7 +451,7 @@ component_struct!
 );
 complex_enum!
 (
-    /// [light-types](https://aframe.io/docs/1.2.0/components/light.html#light-types)
+    /// [light-types](https://aframe.io/docs/1.6.0/components/light.html#light-types)
     LightType, 
     Ambient "type: ambient; " => {},
     Directional "type: directional; {}" => { shadow: OptionalDirectionalShadow },
@@ -474,7 +474,7 @@ complex_enum!
 );
 component_struct!
 (
-    /// [light#shadow](https://aframe.io/docs/1.2.0/components/light.html#configuring-shadows)
+    /// [light#shadow](https://aframe.io/docs/1.6.0/components/light.html#configuring-shadows)
     LocalShadow, 
     shadow_bias: "shadowBias" f64 = 0.0,
     shadow_camera_far: "shadowCameraFar" f32 = 500.0,
@@ -486,7 +486,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [light#shadow](https://aframe.io/docs/1.2.0/components/light.html#configuring-shadows)
+    /// [light#shadow](https://aframe.io/docs/1.6.0/components/light.html#configuring-shadows)
     DirectionalShadow, 
     shadow_bias: "shadowBias" f64 = 0.0,
     shadow_camera_far: "shadowCameraFar" f32 = 500.0,
@@ -515,7 +515,7 @@ complex_enum!
 );
 component_struct!
 (
-    /// [line](https://aframe.io/docs/1.2.0/components/line.html)
+    /// [line](https://aframe.io/docs/1.6.0/components/line.html)
     Line, 
     start: "start" Vector3 = Vector3::DEFAULT,
     end: "end" Vector3 = Vector3::DEFAULT,
@@ -525,7 +525,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [link](https://aframe.io/docs/1.2.0/components/link.html)
+    /// [link](https://aframe.io/docs/1.6.0/components/link.html)
     Link, 
     background_color: "backgroundColor" color::Rgb = color::RED,
     border_color: "borderColor" color::Rgb = color::WHITE,
@@ -541,7 +541,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [loading-screen](https://aframe.io/docs/1.2.0/components/loading-screen.html)
+    /// [loading-screen](https://aframe.io/docs/1.6.0/components/loading-screen.html)
     LoadingScreen, 
     dots_color: "dotsColor" color::Rgb = color::WHITE,
     background_color: "backgroundColor" color::Rgb = color::Rgb::new(36, 202, 255),
@@ -549,7 +549,7 @@ component_struct!
 );
 component_struct!
 {
-    /// [look-controls](https://aframe.io/docs/1.2.0/components/look-controls.html)
+    /// [look-controls](https://aframe.io/docs/1.6.0/components/look-controls.html)
     LookControls,
     enabled: "enabled" bool = true,
     hmd_enabled: "hmdEnabled" bool = true,
@@ -562,7 +562,7 @@ component_struct!
 }
 component_struct!
 {
-    /// [magicleap-controls](https://aframe.io/docs/1.2.0/components/magicleap-controls.html)
+    /// [magicleap-controls](https://aframe.io/docs/1.6.0/components/magicleap-controls.html)
     MagicLeapControls,
     hand: "hand" Hand = Hand::None,
     model: "model" bool = true,
@@ -570,7 +570,7 @@ component_struct!
 }
 component_struct!
 (
-    /// [material](https://aframe.io/docs/1.2.0/components/material.html)
+    /// [material](https://aframe.io/docs/1.6.0/components/material.html)
     Material, 
     alpha_test: "alphaTest" f32 = 0.0,
     depth_test: "depthTest" bool = true,
@@ -590,7 +590,7 @@ component_struct!
 );
 simple_enum!
 (
-    /// [material#side](https://aframe.io/docs/1.2.0/components/material.html#properties_side)
+    /// [material#side](https://aframe.io/docs/1.6.0/components/material.html#properties_side)
     MaterialSide, 
     Front => "front", 
     Back => "back", 
@@ -598,7 +598,7 @@ simple_enum!
 );
 simple_enum!
 (
-    /// [material#vertexcolors](https://aframe.io/docs/1.2.0/components/material.html#properties_vertexcolors)
+    /// [material#vertexcolors](https://aframe.io/docs/1.6.0/components/material.html#properties_vertexcolors)
     VertexColors, 
     None => "none", 
     Vertex => "vertex", 
@@ -606,7 +606,7 @@ simple_enum!
 );
 simple_enum!
 (
-    /// [material#blending](https://aframe.io/docs/1.2.0/components/material.html#properties_blending)
+    /// [material#blending](https://aframe.io/docs/1.6.0/components/material.html#properties_blending)
     Blending, 
     None => "none", 
     Normal => "normal", 
@@ -637,14 +637,14 @@ impl std::fmt::Display for MaterialProps
 }
 component_struct!
 (
-    /// [obj-model](https://aframe.io/docs/1.2.0/components/obj-model.html)
+    /// [obj-model](https://aframe.io/docs/1.6.0/components/obj-model.html)
     ObjModel, 
     obj: "obj" Cow<'static, str> = Cow::Borrowed(""),
     mtl: "mtl" Cow<'static, str> = Cow::Borrowed("")
 );
 component_struct!
 (
-    /// [oculus-go-controls](https://aframe.io/docs/1.2.0/components/oculus-go-controls.html)
+    /// [oculus-go-controls](https://aframe.io/docs/1.6.0/components/oculus-go-controls.html)
     OculusGoControls, 
     arm_model: "armModel" bool = true,
     button_color: "buttonColor" color::Rgb = color::BLACK,
@@ -656,7 +656,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [oculus-touch-controls](https://aframe.io/docs/1.2.0/components/oculus-touch-controls.html)
+    /// [oculus-touch-controls](https://aframe.io/docs/1.6.0/components/oculus-touch-controls.html)
     OculusTouchControls,
     hand: "hand" Hand = Hand::Left,
     model: "model" bool = true,
@@ -664,7 +664,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [pool](https://aframe.io/docs/1.2.0/components/pool.html)
+    /// [pool](https://aframe.io/docs/1.6.0/components/pool.html)
     Pool,
     container: "container" Cow<'static, str> = Cow::Borrowed(""),
     dynamic: "dynamic" bool = false,
@@ -673,12 +673,12 @@ component_struct!
 );
 component_struct!
 (
-    /// [position](https://aframe.io/docs/1.2.0/components/position.html)
+    /// [position](https://aframe.io/docs/1.6.0/components/position.html)
     Position :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0
 );
 component_struct!
 {
-    /// [renderer](https://aframe.io/docs/1.2.0/components/renderer.html)
+    /// [renderer](https://aframe.io/docs/1.6.0/components/renderer.html)
     Renderer,
     antialias: "antialias" Antialias = Antialias::Auto,
     color_management: "colorManagement" bool = false,
@@ -718,7 +718,7 @@ simple_enum!
 }
 component_struct!
 {
-    /// [raycaster](https://aframe.io/docs/1.2.0/components/raycaster.html)
+    /// [raycaster](https://aframe.io/docs/1.6.0/components/raycaster.html)
     RayCaster,
     auto_refresh: "autoRefresh" bool = true,
     direction: "direction" Vector3 = Vector3 { x: 0.0, y: 0.0, z: -1.0 },
@@ -735,38 +735,38 @@ component_struct!
 }
 complex_enum! 
 {
-    /// [raycaster#far](https://aframe.io/docs/1.2.0/components/raycaster.html#properties_far)
+    /// [raycaster#far](https://aframe.io/docs/1.6.0/components/raycaster.html#properties_far)
     DistancePlane,
     Infinity "Infinity" => {},
     Distance "{}" => {distance: f32}
 }
 component_struct!
 (
-    /// [rotation](https://aframe.io/docs/1.2.0/components/rotation.html)
+    /// [rotation](https://aframe.io/docs/1.6.0/components/rotation.html)
     Rotation :alt "{} {} {}", x: "x" f32 = 0.0, y: "y" f32 = 0.0, z: "z" f32 = 0.0
 );
 component_struct!
 (
-    /// [scale](https://aframe.io/docs/1.2.0/components/scale.html)
+    /// [scale](https://aframe.io/docs/1.6.0/components/scale.html)
     Scale :alt "{} {} {}", x: "x" f32 = 1.0, y: "y" f32 = 1.0, z: "z" f32 = 1.0
 );
 component_struct!
 {
-    /// [screenshot](https://aframe.io/docs/1.2.0/components/screenshot.html)
+    /// [screenshot](https://aframe.io/docs/1.6.0/components/screenshot.html)
     Screenshot,
     width: "width" u32 = 4096,
     height: "height" u32 = 2048
 }
 component_struct!
 (
-    /// [shadow](https://aframe.io/docs/1.2.0/components/shadow.html)
+    /// [shadow](https://aframe.io/docs/1.6.0/components/shadow.html)
     Shadow, 
     cast: "cast" bool = true,
     receive: "receive" bool = true
 );
 component_struct!
 (
-    /// [sound](https://aframe.io/docs/1.2.0/components/sound.html)
+    /// [sound](https://aframe.io/docs/1.6.0/components/sound.html)
     Sound, 
     src: "src" Cow<'static, str> = Cow::Borrowed(""),
     autoplay: "autoplay" bool = false,
@@ -776,12 +776,12 @@ component_struct!
 );
 component_struct!
 (
-    /// [stats](https://aframe.io/docs/1.2.0/components/stats.html)
+    /// [stats](https://aframe.io/docs/1.6.0/components/stats.html)
     Stats
 );
 component_struct!
 (
-    /// [text](https://aframe.io/docs/1.2.0/components/text.html)
+    /// [text](https://aframe.io/docs/1.6.0/components/text.html)
     Text, 
     align: "align" TextAlignment = TextAlignment::Left,
     alpha_test: "alphaTest" f32 = 0.5,
@@ -849,7 +849,7 @@ simple_enum!
 }
 component_struct!
 (
-    /// [tracked-controls](https://aframe.io/docs/1.2.0/components/tracked-controls.html)
+    /// [tracked-controls](https://aframe.io/docs/1.6.0/components/tracked-controls.html)
     TrackedControls, 
     arm_model: "armModel" bool = true,
     auto_hide: "autoHide" bool = true,
@@ -862,12 +862,12 @@ component_struct!
 );
 component_struct!
 (
-    /// [visible](https://aframe.io/docs/1.2.0/components/visible.html)
+    /// [visible](https://aframe.io/docs/1.6.0/components/visible.html)
     Visible :alt "{}", visible: "visible" bool = true
 );
 component_struct!
 (
-    /// [vive-controls](https://aframe.io/docs/1.2.0/components/vive-controls.html)
+    /// [vive-controls](https://aframe.io/docs/1.6.0/components/vive-controls.html)
     ViveControls, 
     button_color: "buttonColor" color::Rgb = color::GREY98,
     button_highlight_color: "buttonHighlightColor" color::Rgb = color::Rgb::new(34, 209, 238),
@@ -877,7 +877,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [vive-focus-controls](https://aframe.io/docs/1.2.0/components/vive-focus-controls.html)
+    /// [vive-focus-controls](https://aframe.io/docs/1.6.0/components/vive-focus-controls.html)
     ViveFocusControls, 
     arm_model: "armModel" bool = true,
     button_touched_color: "buttonTouchedColor" color::Rgb = color::GREY47,
@@ -888,7 +888,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [vr-mode-ui](https://aframe.io/docs/1.2.0/components/vr-mode-ui.html)
+    /// [vr-mode-ui](https://aframe.io/docs/1.6.0/components/vr-mode-ui.html)
     VrModeUi, 
     enabled: "enabled" bool = true,
     enter_vr_button: "enterVRButton" Cow<'static, str> = Cow::Borrowed(""),
@@ -896,7 +896,7 @@ component_struct!
 );
 component_struct!
 (
-    /// [wasd-controls](https://aframe.io/docs/1.2.0/components/wasd-controls.html)
+    /// [wasd-controls](https://aframe.io/docs/1.6.0/components/wasd-controls.html)
     WasdControls, 
     acceleration: "acceleration" u32 = 65,
     ad_axis: "adAxis" WasdAxis = WasdAxis::X,
@@ -916,7 +916,7 @@ simple_enum!
 }
 component_struct!
 (
-    /// [webxr](https://aframe.io/docs/1.2.0/components/webxr.html)
+    /// [webxr](https://aframe.io/docs/1.6.0/components/webxr.html)
     WebXR, 
     reference_space_type: "referenceSpaceType" ReferenceSpaceType = ReferenceSpaceType::LocalFloor,
     required_features: "requiredFeatures" List<Cow<'static, str>> = List::DEFAULT,
@@ -935,7 +935,7 @@ simple_enum!
 }
 component_struct!
 (
-    /// [windows-motion-controls](https://aframe.io/docs/1.2.0/components/windows-motion-controls.html)
+    /// [windows-motion-controls](https://aframe.io/docs/1.6.0/components/windows-motion-controls.html)
     WindowsMotionControls, 
     hand: "hand" Hand = Hand::Left,
     pair: "pair" u32 = 0,

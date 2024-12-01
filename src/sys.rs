@@ -13,27 +13,27 @@ static AFRAME: Lazy<Option<Aframe>> = Lazy::new(Aframe::get);
 #[wasm_bindgen]
 extern 
 {
-    /// [registering-a-primitive](https://aframe.io/docs/1.2.0/introduction/html-and-primitives.html#registering-a-primitive)
+    /// [registering-a-primitive](https://aframe.io/docs/1.6.0/introduction/html-and-primitives.html#registering-a-primitive)
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerPrimitive(name: &str, definition: JsValue);
 
-    /// [register-component-name-definition](https://aframe.io/docs/1.2.0/core/component.html#aframe-registercomponent-name-definition)
+    /// [register-component-name-definition](https://aframe.io/docs/1.6.0/core/component.html#aframe-registercomponent-name-definition)
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerComponent(name: &str, data: JsValue);
 
-    /// [registering-a-system](https://aframe.io/docs/1.2.0/core/systems.html#registering-a-system)
+    /// [registering-a-system](https://aframe.io/docs/1.6.0/core/systems.html#registering-a-system)
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerSystem(name: &str, data: JsValue);
 
-    /// [register-a-custom-shader-material](https://aframe.io/docs/1.2.0/components/material.html#register-a-custom-shader-material)
+    /// [register-a-custom-shader-material](https://aframe.io/docs/1.6.0/components/material.html#register-a-custom-shader-material)
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerShader(name: &str, data: JsValue);
 
-    /// [register-a-custom-geometry](https://aframe.io/docs/1.2.0/components/geometry.html#register-a-custom-geometry)
+    /// [register-a-custom-geometry](https://aframe.io/docs/1.6.0/components/geometry.html#register-a-custom-geometry)
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerGeometry(name: &str, data: JsValue);
 
-    /// [aframe_properties_registerelement](https://aframe.io/docs/1.2.0/core/globals.html#aframe_properties_registerelement)
+    /// [aframe_properties_registerelement](https://aframe.io/docs/1.6.0/core/globals.html#aframe_properties_registerelement)
     #[wasm_bindgen(js_namespace = AFRAME)]
     pub fn registerElement(name: &str, data: JsValue);
 
