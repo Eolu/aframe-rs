@@ -6,9 +6,9 @@
 use wasm_bindgen::{JsCast, prelude::*};
 use std::convert::TryFrom;
 use js_sys::{Array, Object};
-use once_cell::sync::Lazy;
+use std::sync::LazyLock;
 
-static AFRAME: Lazy<Option<Aframe>> = Lazy::new(Aframe::get);
+static AFRAME: LazyLock<Option<Aframe>> = LazyLock::new(Aframe::get);
 
 #[wasm_bindgen]
 extern 
